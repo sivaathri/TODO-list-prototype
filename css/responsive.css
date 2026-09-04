@@ -1,0 +1,163 @@
+/* ==========================================================================
+   FlowTrack - Responsive Adaptations (Tablet & Mobile)
+   ========================================================================== */
+
+/* Tablet & Smaller Laptops (<= 1024px) */
+@media (max-width: 1024px) {
+  .details-grid-2col {
+    grid-template-columns: 1fr;
+  }
+
+  .charts-grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid-4 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .form-grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-bar-steps {
+    overflow-x: auto;
+    max-width: 550px;
+    padding-bottom: 2px;
+  }
+}
+
+/* Tablets & Mobile (<= 768px) */
+@media (max-width: 768px) {
+  :root {
+    --sidebar-width: 280px;
+    --header-height: 56px;
+    --demo-bar-height: auto;
+  }
+
+  .app-sidebar {
+    transform: translateX(-100%);
+    box-shadow: var(--shadow-xl);
+    z-index: 60;
+  }
+
+  .app-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    z-index: 55;
+  }
+
+  .app-main {
+    margin-left: 0;
+  }
+
+  .mobile-menu-btn {
+    display: flex;
+  }
+
+  .view-container {
+    padding: 16px 16px 80px 16px;
+  }
+
+  .top-nav {
+    padding: 0 16px;
+  }
+
+  .persona-switcher-label {
+    display: none;
+  }
+
+  .nav-profile-info {
+    display: none;
+  }
+
+  .form-grid-2, .form-grid-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .two-level-approval-container {
+    grid-template-columns: 1fr;
+  }
+
+  .decision-action-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 18px;
+  }
+
+  .decision-buttons {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .login-view-wrapper {
+    padding: 20px 16px;
+    background-position: 72% center;
+  }
+
+  .login-content-wrapper {
+    padding-right: 0;
+    justify-content: center;
+  }
+
+  .login-panel-container {
+    width: 100%;
+    max-width: 380px;
+  }
+
+  .guided-demo-bar {
+    flex-direction: column;
+    height: auto;
+    padding: 10px 14px;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .demo-bar-steps {
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 4px;
+  }
+
+  .demo-bar-right {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .kpi-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .stepper-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .workflow-stepper {
+    overflow-x: auto;
+    padding-bottom: 12px;
+  }
+
+  .stepper-step {
+    min-width: 90px;
+  }
+}
+
+@media (max-width: 480px) {
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-login-grid {
+    grid-template-columns: 1fr;
+  }
+}
