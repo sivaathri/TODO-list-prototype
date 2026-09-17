@@ -50,8 +50,22 @@ class FlowApp {
       this.handleStoreEvent(event, payload);
     });
 
+    // Close top-module dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      const switcher = document.getElementById('top-module-switcher');
+      const dropdown = document.getElementById('top-module-dropdown');
+      if (dropdown && !dropdown.classList.contains('hidden')) {
+        if (switcher && !switcher.contains(e.target)) {
+          dropdown.classList.add('hidden');
+          const btn = document.getElementById('btn-active-module');
+          if (btn) btn.classList.remove('open');
+        }
+      }
+    });
+
     // Render initial user context & sidebar
     this.syncUserContext();
+    this.syncModuleContext();
     this.renderCurrentView();
     this.updateNotificationBadge();
 
@@ -68,9 +82,12 @@ class FlowApp {
       if (this.currentView === 'notifications') {
         this.renderNotificationsView();
       }
+    } else if (event === 'MODULE_CHANGED') {
+      this.syncModuleContext();
     } else if (event === 'RESET') {
       this.showNotificationToast('System data reset to default demonstration state.', 'info');
       this.syncUserContext();
+      this.syncModuleContext();
       this.renderCurrentView();
     } else {
       // Re-render active view on request updates
@@ -83,24 +100,145 @@ class FlowApp {
   // ========================================================================
   loginAs(roleKey) {
     window.flowStore.setCurrentUser(roleKey);
+    this.syncUserContext();
+    this.syncModuleContext();
+
+    // After login click -> Show the 3 Menu Module Selection screen
+    this.showModuleSelector();
+  }
+
+  showModuleSelector() {
+    const loginView = document.getElementById('view-login');
+    const moduleView = document.getElementById('view-module-select');
+    const appShell = document.getElementById('app-shell');
+
+    if (loginView) loginView.classList.add('hidden');
+    if (appShell) {
+      appShell.classList.add('hidden');
+      appShell.style.display = 'none';
+    }
+    if (moduleView) {
+      moduleView.classList.remove('hidden');
+      moduleView.style.display = 'flex';
+    }
+
+    const user = window.flowStore.getCurrentUser();
+    const modAvatar = document.getElementById('mod-user-avatar');
+    const modName = document.getElementById('mod-user-name');
+    const modRole = document.getElementById('mod-user-role');
+
+    if (modAvatar) modAvatar.textContent = user.avatar;
+    if (modName) modName.textContent = user.name;
+    if (modRole) modRole.textContent = `${user.roleLabel} • ${user.department}`;
+
+    this.syncModuleContext();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  selectModule(moduleKey) {
+    const selected = window.flowStore.setSelectedModule(moduleKey);
+    this.syncModuleContext();
+
+    const moduleView = document.getElementById('view-module-select');
     const loginView = document.getElementById('view-login');
     const appShell = document.getElementById('app-shell');
-    if (loginView) loginView.classList.add('hidden');
+
+    if (moduleView) {
+      moduleView.classList.add('hidden');
+      moduleView.style.display = 'none';
+    }
+    if (loginView) {
+      loginView.classList.add('hidden');
+    }
     if (appShell) {
       appShell.classList.remove('hidden');
       appShell.style.display = 'flex';
     }
 
+    // Close top dropdown if open
+    const dropdown = document.getElementById('top-module-dropdown');
+    if (dropdown) dropdown.classList.add('hidden');
+    const btn = document.getElementById('btn-active-module');
+    if (btn) btn.classList.remove('open');
+
     // Route to appropriate persona dashboard
-    if (roleKey === 'creator') {
+    const user = window.flowStore.getCurrentUser();
+    if (user.role === 'creator') {
       this.navigateTo('creator-dashboard');
-    } else if (roleKey === 'executor') {
+    } else if (user.role === 'executor') {
       this.navigateTo('executor-dashboard');
-    } else if (roleKey === 'approver1' || roleKey === 'approver2') {
+    } else if (user.role === 'approver1' || user.role === 'approver2') {
       this.navigateTo('approver-dashboard');
-    } else if (roleKey === 'admin') {
+    } else if (user.role === 'admin') {
       this.navigateTo('admin-dashboard');
     }
+
+    this.showNotificationToast(`Opened: ${selected.name}`, 'info');
+  }
+
+  openModuleSelector() {
+    const appShell = document.getElementById('app-shell');
+    const moduleView = document.getElementById('view-module-select');
+    if (appShell) {
+      appShell.classList.add('hidden');
+      appShell.style.display = 'none';
+    }
+    if (moduleView) {
+      moduleView.classList.remove('hidden');
+      moduleView.style.display = 'flex';
+    }
+
+    const dropdown = document.getElementById('top-module-dropdown');
+    if (dropdown) dropdown.classList.add('hidden');
+    const btn = document.getElementById('btn-active-module');
+    if (btn) btn.classList.remove('open');
+
+    this.syncModuleContext();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  toggleModuleDropdown(event) {
+    if (event) event.stopPropagation();
+    const dropdown = document.getElementById('top-module-dropdown');
+    const btn = document.getElementById('btn-active-module');
+    if (dropdown) {
+      const isHidden = dropdown.classList.toggle('hidden');
+      if (btn) {
+        btn.classList.toggle('open', !isHidden);
+      }
+    }
+  }
+
+  syncModuleContext() {
+    const currentMod = window.flowStore.getSelectedModule();
+    if (!currentMod) return;
+
+    const topLabel = document.getElementById('top-module-name');
+    const topDot = document.getElementById('top-module-dot');
+    const sbBadge = document.getElementById('sb-module-badge');
+    const sbModName = document.getElementById('sb-mod-current-name');
+    const sbModDot = document.getElementById('sb-mod-dot');
+
+    if (topLabel) topLabel.textContent = currentMod.name;
+    if (sbBadge) sbBadge.textContent = currentMod.name;
+    if (sbModName) sbModName.textContent = currentMod.name;
+
+    // Dot colors
+    if (topDot) topDot.style.backgroundColor = currentMod.accent;
+    if (sbModDot) sbModDot.style.backgroundColor = currentMod.accent;
+
+    // Active state in dropdown
+    ['process_audit', 'ihlr', 'try_out'].forEach(id => {
+      const dropItem = document.getElementById(`top-menu-item-${id}`);
+      if (dropItem) {
+        dropItem.classList.toggle('active', id === currentMod.id);
+      }
+      const cardId = id === 'process_audit' ? 'card-mod-process-audit' : id === 'try_out' ? 'card-mod-tryout' : 'card-mod-ihlr';
+      const cardEl = document.getElementById(cardId);
+      if (cardEl) {
+        cardEl.classList.toggle('is-active-module', id === currentMod.id);
+      }
+    });
   }
 
   handleStandardLogin() {
@@ -169,14 +307,21 @@ class FlowApp {
 
   logout() {
     const appShell = document.getElementById('app-shell');
+    const moduleView = document.getElementById('view-module-select');
     const loginView = document.getElementById('view-login');
     if (appShell) {
       appShell.classList.add('hidden');
       appShell.style.display = 'none';
     }
+    if (moduleView) {
+      moduleView.classList.add('hidden');
+      moduleView.style.display = 'none';
+    }
     if (loginView) {
       loginView.classList.remove('hidden');
     }
+    const dropdown = document.getElementById('top-module-dropdown');
+    if (dropdown) dropdown.classList.add('hidden');
   }
 
   syncUserContext() {

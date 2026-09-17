@@ -158,8 +158,147 @@
           </div>
         </div>
       </main>
+    </div>
 
+    <!-- ====================================================================
+         1.5 MODULE SELECTION SCREEN (1. Process Audit Observation, 2. IHLR, 3. Try Out Status)
+         ==================================================================== -->
+    <div id="view-module-select" class="module-select-wrapper hidden">
+      <div class="module-bg-ambient"></div>
+      
+      <div class="module-select-container">
+        <!-- Header / Brand Section -->
+        <header class="module-select-header">
+          <div class="module-brand-badge">
+            <img src="images/inel_logo_white.svg" alt="India Nippon Electricals Limited" class="module-inel-logo" />
+            <div class="module-brand-divider"></div>
+            <span class="module-brand-portal">Quality &amp; Production Portal</span>
+          </div>
 
+          <div class="module-user-greeting">
+            <div class="module-user-avatar" id="mod-user-avatar">S</div>
+            <div class="module-user-info">
+              <div class="module-welcome-text">Logged in as <strong id="mod-user-name">Siva</strong></div>
+              <div class="module-role-pill" id="mod-user-role">Creator • Production Planning</div>
+            </div>
+            <button type="button" class="module-logout-btn" onclick="window.flowApp.logout()" title="Switch User / Logout">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              <span>Logout</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- Title Block -->
+        <div class="module-title-block">
+          <span class="module-kicker">Workspace Portal Selection</span>
+          <h1 class="module-main-title">Select Operational System</h1>
+          <p class="module-subtitle">Please select one of the core manufacturing modules below to access the main workflow workspace.</p>
+        </div>
+
+        <!-- The 3 Requested Menus / Cards Grid -->
+        <div class="module-cards-grid">
+
+          <!-- Card 1: Process Audit Observation -->
+          <div class="module-card card-audit" id="card-mod-process-audit" onclick="window.flowApp.selectModule('process_audit')">
+            <div class="module-card-top">
+              <span class="module-index-badge">1</span>
+              <span class="module-status-chip chip-audit">Audit &amp; Compliance</span>
+            </div>
+            <div class="module-icon-box icon-audit">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <path d="m9 15 2 2 4-4"></path>
+              </svg>
+            </div>
+            <h2 class="module-card-title">Process Audit Observation</h2>
+            <p class="module-card-desc">Line observation logging, 4M compliance checklists, non-conformance audits, floor corrective actions &amp; verification reviews.</p>
+            <div class="module-card-features">
+              <span class="module-feature-tag">4M Audit Checks</span>
+              <span class="module-feature-tag">Line Observation</span>
+              <span class="module-feature-tag">CAPA Tracker</span>
+            </div>
+            <div class="module-card-footer">
+              <span class="module-action-cta">Launch Module</span>
+              <svg class="module-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Card 2: IHLR -->
+          <div class="module-card card-ihlr" id="card-mod-ihlr" onclick="window.flowApp.selectModule('ihlr')">
+            <div class="module-card-top">
+              <span class="module-index-badge">2</span>
+              <span class="module-status-chip chip-rejection">Line Rejection</span>
+            </div>
+            <div class="module-icon-box icon-ihlr">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            <h2 class="module-card-title">IHLR</h2>
+            <p class="module-card-desc">In-House Line Rejection monitoring, scrap analysis, defect categorization, root cause containment &amp; PPM performance tracking.</p>
+            <div class="module-card-features">
+              <span class="module-feature-tag">Line Rejection</span>
+              <span class="module-feature-tag">Scrap Monitoring</span>
+              <span class="module-feature-tag">Root Cause 8D</span>
+            </div>
+            <div class="module-card-footer">
+              <span class="module-action-cta">Launch Module</span>
+              <svg class="module-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Card 3: Try Out Status -->
+          <div class="module-card card-tryout" id="card-mod-tryout" onclick="window.flowApp.selectModule('try_out')">
+            <div class="module-card-top">
+              <span class="module-index-badge">3</span>
+              <span class="module-status-chip chip-tryout">Tool &amp; Die Trial</span>
+            </div>
+            <div class="module-icon-box icon-tryout">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+              </svg>
+            </div>
+            <h2 class="module-card-title">Try Out Status</h2>
+            <p class="module-card-desc">Tool &amp; die trial run monitoring, pilot batch testing, engineering change validations &amp; multi-tier sample sign-offs.</p>
+            <div class="module-card-features">
+              <span class="module-feature-tag">Trial Run Status</span>
+              <span class="module-feature-tag">Pilot Batch Run</span>
+              <span class="module-feature-tag">Sample Approval</span>
+            </div>
+            <div class="module-card-footer">
+              <span class="module-action-cta">Launch Module</span>
+              <svg class="module-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Quick Switch Hint / Footer Note -->
+        <div class="module-select-footer-note">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <span>Select any module to open the main workspace screen. You can switch between modules at any time from the top navigation bar.</span>
+        </div>
+      </div>
     </div>
 
     <!-- ====================================================================
@@ -177,7 +316,7 @@
           <div class="sidebar-brand-wrapper">
             <img src="images/inel_logo_white.svg" alt="India Nippon Electricals Limited" class="sidebar-inel-logo" />
             <div class="sidebar-brand-meta">
-              <span class="brand-subtitle">FlowTrack  &amp; Approvals</span>
+              <span class="brand-subtitle" id="sb-module-badge">Process Audit Observation</span>
             </div>
           </div>
         </div>
@@ -189,6 +328,20 @@
             <span class="sidebar-user-name" id="sb-user-name">Siva</span>
             <span class="sidebar-user-role-badge" id="sb-user-role">Creator</span>
           </div>
+        </div>
+
+        <!-- Active Module Quick Tag in Sidebar -->
+        <div class="sidebar-module-card" onclick="window.flowApp.openModuleSelector()" title="Click to Switch Module">
+          <div class="sb-mod-left">
+            <span class="sb-mod-dot" id="sb-mod-dot"></span>
+            <div class="sb-mod-text">
+              <span class="sb-mod-sub">ACTIVE SYSTEM</span>
+              <strong class="sb-mod-name" id="sb-mod-current-name">Process Audit Observation</strong>
+            </div>
+          </div>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m9 18 6-6-6-6"/>
+          </svg>
         </div>
 
         <!-- Sidebar Dynamic Nav Items -->
@@ -240,6 +393,56 @@
                 <line x1="3" y1="18" x2="21" y2="18" />
               </svg>
             </button>
+
+            <!-- Module Switcher Badge in Top Nav -->
+            <div class="top-nav-module-container" id="top-module-switcher">
+              <button type="button" class="top-module-btn" onclick="window.flowApp.toggleModuleDropdown(event)" id="btn-active-module" title="Click to Switch Module">
+                <span class="module-indicator-dot" id="top-module-dot"></span>
+                <span class="top-module-pre">Module:</span>
+                <span class="top-module-label" id="top-module-name">Process Audit Observation</span>
+                <svg class="top-module-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+              
+              <!-- Dropdown Menu for Switching Modules -->
+              <div class="top-module-menu hidden" id="top-module-dropdown">
+                <div class="top-module-menu-header">Active Manufacturing Systems</div>
+                <button type="button" class="top-module-item" id="top-menu-item-process_audit" onclick="window.flowApp.selectModule('process_audit')">
+                  <span class="top-module-num">1</span>
+                  <div class="top-module-item-info">
+                    <strong>Process Audit Observation</strong>
+                    <small>Audit checklists, 4M compliance &amp; CAPA</small>
+                  </div>
+                </button>
+                <button type="button" class="top-module-item" id="top-menu-item-ihlr" onclick="window.flowApp.selectModule('ihlr')">
+                  <span class="top-module-num mod-num-ihlr">2</span>
+                  <div class="top-module-item-info">
+                    <strong>IHLR</strong>
+                    <small>In-House Line Rejection &amp; scrap monitoring</small>
+                  </div>
+                </button>
+                <button type="button" class="top-module-item" id="top-menu-item-try_out" onclick="window.flowApp.selectModule('try_out')">
+                  <span class="top-module-num mod-num-tryout">3</span>
+                  <div class="top-module-item-info">
+                    <strong>Try Out Status</strong>
+                    <small>Tool &amp; die trial tracking &amp; approvals</small>
+                  </div>
+                </button>
+                <div class="top-module-menu-footer">
+                  <button type="button" class="top-module-all-btn" onclick="window.flowApp.openModuleSelector()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="3" width="7" height="7"></rect>
+                      <rect x="14" y="3" width="7" height="7"></rect>
+                      <rect x="14" y="14" width="7" height="7"></rect>
+                      <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    <span>Full Module Selection Screen</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
             <div class="page-breadcrumb" id="top-breadcrumb">
               <span class="breadcrumb-active" id="top-active-breadcrumb"> Dashboard</span>
             </div>
