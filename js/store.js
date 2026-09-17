@@ -9,6 +9,42 @@ class AppStore {
     this.STORAGE_KEY_USERS = 'inel_flowtrack_users_v1';
     this.STORAGE_KEY_NOTIFS = 'inel_flowtrack_notifs_v1';
     this.STORAGE_KEY_CURRENT_USER = 'inel_flowtrack_current_user_v1';
+    this.STORAGE_KEY_CURRENT_MODULE = 'inel_flowtrack_current_module_v1';
+
+    this.AVAILABLE_MODULES = [
+      {
+        id: 'process_audit',
+        number: '1',
+        name: 'Process Audit Observation',
+        tagline: 'Standard Work & Quality Compliance',
+        description: 'Line observation audits, 4M compliance checks, non-conformance logging, and floor corrective action tracking.',
+        icon: 'audit',
+        badge: 'Audit & Compliance',
+        accent: '#2563eb'
+      },
+      {
+        id: 'ihlr',
+        number: '2',
+        name: 'IHLR',
+        fullName: 'In-House Line Rejection',
+        tagline: 'Floor Defect & Scrap Analysis',
+        description: 'Comprehensive in-house line rejection monitoring, defect categorization, scrap reduction, and root cause containment.',
+        icon: 'rejection',
+        badge: 'Line Quality',
+        accent: '#dc2626'
+      },
+      {
+        id: 'try_out',
+        number: '3',
+        name: 'Try Out Status',
+        altName: 'try out satus',
+        tagline: 'Tooling, Die & Pilot Trials',
+        description: 'Trial run status tracking, pilot batch evaluation, tooling modifications, engineering change approvals, and sign-offs.',
+        icon: 'tryout',
+        badge: 'Pilot & Engineering',
+        accent: '#7c3aed'
+      }
+    ];
 
     this.listeners = [];
     this.emailQueue = [];
@@ -65,6 +101,29 @@ class AppStore {
       this.currentUser.shortName = 'Siva';
       this.currentUser.avatar = 'S';
     }
+
+    // Active module
+    const savedModule = localStorage.getItem(this.STORAGE_KEY_CURRENT_MODULE);
+    this.currentModule = this.AVAILABLE_MODULES.find(m => m.id === savedModule) || this.AVAILABLE_MODULES[0];
+  }
+
+  // Modules API
+  getModules() {
+    return this.AVAILABLE_MODULES;
+  }
+
+  getSelectedModule() {
+    return this.currentModule || this.AVAILABLE_MODULES[0];
+  }
+
+  setSelectedModule(moduleId) {
+    const mod = this.AVAILABLE_MODULES.find(m => m.id === moduleId);
+    if (mod) {
+      this.currentModule = mod;
+      localStorage.setItem(this.STORAGE_KEY_CURRENT_MODULE, moduleId);
+      this.notify('MODULE_CHANGED', mod);
+    }
+    return this.currentModule;
   }
 
   // Subscribe to changes
