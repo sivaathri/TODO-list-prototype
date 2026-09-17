@@ -2583,11 +2583,10 @@ a {
   color: #0f172a;
   display: flex;
   flex-direction: column;
-  align-items: center;
   overflow-y: auto;
   overflow-x: hidden;
   box-sizing: border-box;
-  padding: 32px 24px 48px;
+  padding: 24px 36px 36px 36px;
   animation: moduleFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -2605,8 +2604,8 @@ a {
 .module-bg-ambient {
   position: absolute;
   top: -10%;
-  left: 10%;
-  width: 80%;
+  left: 5%;
+  width: 90%;
   height: 40%;
   background: radial-gradient(circle, rgba(37, 99, 235, 0.04) 0%, rgba(124, 58, 237, 0.03) 40%, transparent 70%);
   filter: blur(60px);
@@ -2618,10 +2617,11 @@ a {
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 1180px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
   display: flex;
   flex-direction: column;
+  flex: 1;
 }
 
 /* Header */
@@ -2629,9 +2629,11 @@ a {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 22px;
+  width: 100%;
+  padding-bottom: 20px;
   border-bottom: 1px solid #e2e8f0;
-  margin-bottom: 34px;
+  margin-bottom: 28px;
+  box-sizing: border-box;
 }
 
 .module-brand-badge {
@@ -2757,23 +2759,28 @@ a {
   line-height: 1.5;
 }
 
-/* 3 Cards Grid */
+/* 3 Cards Grid - Full Width Edge to Edge */
 .module-cards-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  gap: 28px;
+  width: 100%;
+  max-width: 100%;
   margin-bottom: 32px;
+  box-sizing: border-box;
 }
 
 .module-card {
   background: #ffffff;
   border: 1.5px solid #e2e8f0;
   border-radius: 20px;
-  padding: 28px 26px;
+  padding: 32px 30px;
   box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
   cursor: pointer;
   display: flex;
   flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
@@ -3248,10 +3255,15 @@ a {
 
 /* Responsive adjustments for Module Selector */
 @media (max-width: 960px) {
+  .module-select-wrapper {
+    padding: 20px 18px;
+  }
+
   .module-cards-grid {
     grid-template-columns: 1fr;
-    max-width: 520px;
-    margin: 0 auto 32px;
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 24px;
   }
 
   .module-select-header {
