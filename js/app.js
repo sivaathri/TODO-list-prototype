@@ -642,7 +642,7 @@ class FlowApp {
     if (document.getElementById('ihlr-field-problem')) document.getElementById('ihlr-field-problem').value = 'Low voltage';
     if (document.getElementById('ihlr-field-model')) document.getElementById('ihlr-field-model').value = 'OLS LONG ARM';
     if (document.getElementById('ihlr-field-detected-at')) document.getElementById('ihlr-field-detected-at').value = 'Final Testing';
-    if (document.getElementById('ihlr-field-received-from')) document.getElementById('ihlr-field-received-from').value = 'D3/LINE';
+    if (document.getElementById('ihlr-field-received-from')) document.getElementById('ihlr-field-received-from').value = '';
     if (document.getElementById('ihlr-field-analysis-by')) document.getElementById('ihlr-field-analysis-by').value = 'GURU';
     if (document.getElementById('ihlr-field-4m')) {
       document.getElementById('ihlr-field-4m').value = 'MAN';
@@ -699,7 +699,7 @@ class FlowApp {
     if (document.getElementById('ihlr-field-problem')) document.getElementById('ihlr-field-problem').value = '';
     if (document.getElementById('ihlr-field-model')) document.getElementById('ihlr-field-model').value = '';
     if (document.getElementById('ihlr-field-detected-at')) document.getElementById('ihlr-field-detected-at').value = '';
-    if (document.getElementById('ihlr-field-received-from')) document.getElementById('ihlr-field-received-from').value = '';
+    if (document.getElementById('ihlr-field-received-from')) document.getElementById('ihlr-field-received-from').value = 'D3';
     if (document.getElementById('ihlr-field-analysis-by')) document.getElementById('ihlr-field-analysis-by').value = '';
     if (document.getElementById('ihlr-field-w1')) document.getElementById('ihlr-field-w1').value = '';
     if (document.getElementById('ihlr-field-w2')) document.getElementById('ihlr-field-w2').value = '';
@@ -914,7 +914,7 @@ class FlowApp {
       const problemVal = document.getElementById('ihlr-field-problem')?.value || 'Low voltage';
       const modelVal = document.getElementById('ihlr-field-model')?.value || 'OLS LONG ARM';
       const detectedVal = document.getElementById('ihlr-field-detected-at')?.value || 'Final Testing';
-      const receivedVal = document.getElementById('ihlr-field-received-from')?.value || 'D3/LINE';
+      const receivedVal = document.getElementById('ihlr-field-received-from')?.value || '';
       const analystVal = document.getElementById('ihlr-field-analysis-by')?.value || 'GURU';
       const fourMVal = document.getElementById('ihlr-field-4m')?.value || 'MAN';
       const respVal = document.getElementById('ihlr-field-resp')?.value || 'PROD';
@@ -1099,7 +1099,7 @@ class FlowApp {
       if (detCreator) detCreator.textContent = `${req.analysisDoneBy || 'GURU'} (Analysis By)`;
 
       const detExecutor = document.getElementById('det-executor');
-      if (detExecutor) detExecutor.textContent = `Received From: ${req.receivedFrom || 'D3/LINE'}`;
+      if (detExecutor) detExecutor.textContent = `Received From: ${req.receivedFrom || ''}`;
 
       const detTrackingId = document.getElementById('det-tracking-id');
       if (detTrackingId) detTrackingId.textContent = req.id;

@@ -649,19 +649,23 @@
           <form id="form-create-request" onsubmit="event.preventDefault(); window.flowApp.handleCreateRequestSubmit();">
 
             <!-- Module Switcher Tabs for Section 1 (Process Audit vs IHLR) -->
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+            <div
+              style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
               <div class="module-tab-selector" id="create-module-tab-selector">
-                <button type="button" class="module-tab-btn active" id="tab-mod-process-audit" onclick="window.flowApp.switchProductionDetailsModule('process_audit')">
+                <button type="button" class="module-tab-btn active" id="tab-mod-process-audit"
+                  onclick="window.flowApp.switchProductionDetailsModule('process_audit')">
                   <span class="tab-badge-num">1</span>
                   <span>Process Audit Observation</span>
                 </button>
-                <button type="button" class="module-tab-btn tab-ihlr" id="tab-mod-ihlr" onclick="window.flowApp.switchProductionDetailsModule('ihlr')">
+                <button type="button" class="module-tab-btn tab-ihlr" id="tab-mod-ihlr"
+                  onclick="window.flowApp.switchProductionDetailsModule('ihlr')">
                   <span class="tab-badge-num">2</span>
                   <span>IHLR (In-House Line Rejection)</span>
                 </button>
               </div>
               <div id="module-active-pill-badge" class="badge badge-priority-normal">
-                Active Module: <strong id="module-active-pill-text" style="margin-left: 4px;">Process Audit Observation</strong>
+                Active Module: <strong id="module-active-pill-text" style="margin-left: 4px;">Process Audit
+                  Observation</strong>
               </div>
             </div>
 
@@ -907,13 +911,13 @@
                     </svg>
                     1. Production Details
                   </h2>
-                  <span class="badge" style="background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; font-weight: 700; font-size: 11px;">
+                  <span class="badge"
+                    style="background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; font-weight: 700; font-size: 11px;">
                     IHLR • In-House Line Rejection
                   </span>
                 </div>
                 <div style="display: flex; gap: 8px;">
-                  <button type="button" class="btn btn-secondary btn-sm"
-                    onclick="window.flowApp.loadExcelSampleIHLR()"
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="window.flowApp.loadExcelSampleIHLR()"
                     title="Pre-fill with exact data from your IHLR Excel sheet">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
@@ -926,7 +930,8 @@
                   </button>
                 </div>
               </div>
-              <p class="form-section-desc">Floor rejection tracking, inspection detection points, QA Why-Why root cause analysis, 4M categorization, and department accountability.</p>
+              <p class="form-section-desc">Floor rejection tracking, inspection detection points, QA Why-Why root cause
+                analysis, 4M categorization, and department accountability.</p>
 
               <!-- Row 1: Req NO, Date, Shift, Actual Qty -->
               <div class="form-grid-4" style="margin-bottom: 18px;">
@@ -989,7 +994,8 @@
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label" for="ihlr-field-detected-at">Problem Detected at <span class="required">*</span></label>
+                  <label class="form-label" for="ihlr-field-detected-at">Problem Detected at <span
+                      class="required">*</span></label>
                   <input type="text" id="ihlr-field-detected-at" class="form-input" list="ihlr-datalist-detected"
                     placeholder="e.g. Final Testing" value="Final Testing" required>
                   <datalist id="ihlr-datalist-detected">
@@ -1003,24 +1009,21 @@
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label" for="ihlr-field-received-from">Received From <span class="required">*</span></label>
-                  <input type="text" id="ihlr-field-received-from" class="form-input" list="ihlr-datalist-received-from"
-                    placeholder="e.g. D3/LINE" value="D3/LINE" required>
-                  <datalist id="ihlr-datalist-received-from">
-                    <option value="D3/LINE">D3/LINE</option>
-                    <option value="Line 1 Assembly">Line 1 Assembly</option>
-                    <option value="Line 2 Stator">Line 2 Stator</option>
-                    <option value="SMT Line 1">SMT Line 1</option>
-                    <option value="Sub-Assembly Area">Sub-Assembly Area</option>
-                  </datalist>
-                  <span class="form-help">Originating line or work cell</span>
+                  <label class="form-label" for="ihlr-field-received-from">Received From <span
+                      class="required">*</span></label>
+                  <select id="ihlr-field-received-from" class="form-select" required>
+                    <option value="D3" selected>D3</option>
+                    <option value="Line">Line</option>
+                  </select>
+                  <span class="form-help">Originating department or production line</span>
                 </div>
               </div>
 
               <!-- Row 3: Analysis done By, 4M, Resp -->
               <div class="form-grid-3" style="margin-bottom: 18px;">
                 <div class="form-group">
-                  <label class="form-label" for="ihlr-field-analysis-by">Analysis done By <span class="required">*</span></label>
+                  <label class="form-label" for="ihlr-field-analysis-by">Analysis done By <span
+                      class="required">*</span></label>
                   <input type="text" id="ihlr-field-analysis-by" class="form-input" list="ihlr-datalist-analysts"
                     placeholder="e.g. GURU" value="GURU" required>
                   <datalist id="ihlr-datalist-analysts">
@@ -1033,11 +1036,13 @@
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label" for="ihlr-field-4m" style="display: flex; align-items: center; justify-content: space-between;">
+                  <label class="form-label" for="ihlr-field-4m"
+                    style="display: flex; align-items: center; justify-content: space-between;">
                     <span>4M <span class="required">*</span></span>
                     <span class="badge-4m badge-4m-man" id="ihlr-4m-badge-preview">MAN</span>
                   </label>
-                  <select id="ihlr-field-4m" class="form-select" onchange="window.flowApp.update4MBadge(this.value)" required>
+                  <select id="ihlr-field-4m" class="form-select" onchange="window.flowApp.update4MBadge(this.value)"
+                    required>
                     <option value="MAN" selected>MAN (Operator error / Skill / Skipped inspection)</option>
                     <option value="MACHINE">MACHINE (Equipment / Tooling / Sensor calibration)</option>
                     <option value="MATERIAL">MATERIAL (Raw parts variance / Supplier defect)</option>
@@ -1074,23 +1079,28 @@
                   <div class="evidence-preview-thumb"
                     onclick="window.flowApp.openEvidenceLightbox('images/defect_ihlr_sensor.svg', 'Defect Image: OLS LONG ARM Low Voltage (Sensor Improper Soldering)')"
                     title="Click to enlarge defect photo">
-                    <img id="ihlr-evidence-thumb-img" src="images/defect_ihlr_sensor.svg" alt="Sensor solder defect photo">
+                    <img id="ihlr-evidence-thumb-img" src="images/defect_ihlr_sensor.svg"
+                      alt="Sensor solder defect photo">
                     <span class="table-evidence-badge">RED MARKUP</span>
                   </div>
                   <div style="flex: 1;">
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                    <div
+                      style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
                       <strong style="font-size: 13.5px; color: var(--navy-900);" id="ihlr-evidence-name-label">
                         Defect_Sensor_Improper_Soldering.svg
                       </strong>
                       <span class="badge badge-priority-critical" style="font-size: 10px;">DEFECT MARKED</span>
                     </div>
-                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;" id="ihlr-evidence-sub-label">
-                      Visual evidence of sensor cavity solder joint bridge / cold solder causing low voltage at Final Testing.
+                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;"
+                      id="ihlr-evidence-sub-label">
+                      Visual evidence of sensor cavity solder joint bridge / cold solder causing low voltage at Final
+                      Testing.
                     </p>
                     <div style="display: flex; gap: 8px;">
                       <button type="button" class="btn btn-secondary btn-sm"
                         onclick="window.flowApp.openEvidenceLightbox('images/defect_ihlr_sensor.svg', 'Defect Image: OLS LONG ARM Low Voltage (Sensor Improper Soldering)')">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2">
                           <circle cx="11" cy="11" r="8" />
                           <line x1="21" y1="21" x2="16.65" y2="16.65" />
                           <line x1="11" y1="8" x2="11" y2="14" />
@@ -1150,7 +1160,8 @@
                     </div>
                   </div>
                 </div>
-                <span class="form-help">Iterative 5-Why analysis to trace the root cause from symptom (W1) to preventable root cause (W5).</span>
+                <span class="form-help">Iterative 5-Why analysis to trace the root cause from symptom (W1) to
+                  preventable root cause (W5).</span>
               </div>
             </div>
 
