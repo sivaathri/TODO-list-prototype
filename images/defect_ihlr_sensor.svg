@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <defs>
+    <!-- Background workbench gradient -->
+    <linearGradient id="benchBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0369a1" />
+    </linearGradient>
+
+    <!-- Metallic bushing gradient -->
+    <radialGradient id="metalRing" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="60%" stop-color="#94a3b8" />
+      <stop offset="100%" stop-color="#475569" />
+    </radialGradient>
+
+    <!-- Plastic casing gradient -->
+    <linearGradient id="casingGrad" x1="0%" y1="0%" x2="100%" y2="80%">
+      <stop offset="0%" stop-color="#334155" />
+      <stop offset="30%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <!-- Sensor cavity / silicon chip -->
+    <linearGradient id="chipCavity" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#111827" />
+      <stop offset="100%" stop-color="#1f2937" />
+    </linearGradient>
+
+    <!-- Solder contacts texture -->
+    <linearGradient id="solderJoint" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e2e8f0" />
+      <stop offset="50%" stop-color="#94a3b8" />
+      <stop offset="100%" stop-color="#cbd5e1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Blue ESD Workmat Background -->
+  <rect width="400" height="300" fill="url(#benchBg)" />
+  <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+  </pattern>
+  <rect width="400" height="300" fill="url(#grid)" />
+
+  <!-- Lead Wires exiting bottom left -->
+  <!-- Red Wire -->
+  <path d="M 120 230 C 100 250, 70 270, 30 285" fill="none" stroke="#ef4444" stroke-width="10" stroke-linecap="round" />
+  <!-- Black Wire -->
+  <path d="M 115 240 C 95 260, 60 278, 20 295" fill="none" stroke="#0f172a" stroke-width="10" stroke-linecap="round" />
+  <!-- Yellow Wire -->
+  <path d="M 125 220 C 110 245, 80 265, 40 275" fill="none" stroke="#eab308" stroke-width="6" stroke-linecap="round" />
+
+  <!-- Main Sensor Body (Black Molded Polymer Casing) -->
+  <g id="sensorBody" transform="translate(10, 10)">
+    <!-- Mounting Bracket Ear with Eyelet -->
+    <path d="M 110 70 C 110 30, 160 30, 160 70 L 160 110 L 110 110 Z" fill="url(#casingGrad)" stroke="#0f172a" stroke-width="2" />
+    <!-- Metallic Grounding Eyelet Ring -->
+    <circle cx="135" cy="65" r="22" fill="url(#metalRing)" stroke="#334155" stroke-width="2" />
+    <circle cx="135" cy="65" r="13" fill="#0284c7" stroke="#475569" stroke-width="2" />
+
+    <!-- Main Module Housing Block -->
+    <path d="M 105 95 L 290 95 C 300 95, 305 102, 305 112 L 305 215 C 305 225, 298 230, 288 230 L 120 230 C 108 230, 102 222, 102 210 L 102 110 C 102 100, 105 95, 105 95 Z"
+          fill="url(#casingGrad)" stroke="#0f172a" stroke-width="2.5" />
+
+    <!-- Housing Bevel Highlights -->
+    <path d="M 110 102 L 285 102" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" />
+    <path d="M 108 105 L 108 215" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
+
+    <!-- Recessed Sensor Chip Well / Cavity -->
+    <rect x="135" y="118" width="145" height="84" rx="5" fill="url(#chipCavity)" stroke="#334155" stroke-width="2" />
+
+    <!-- Internal IC substrate / Silicon Plate -->
+    <rect x="144" y="126" width="127" height="68" rx="3" fill="#0b0f19" />
+
+    <!-- Metallic traces & soldering pads -->
+    <rect x="152" y="134" width="111" height="14" rx="2" fill="url(#solderJoint)" opacity="0.85" />
+    <rect x="152" y="152" width="111" height="14" rx="2" fill="url(#solderJoint)" opacity="0.9" />
+    <rect x="152" y="170" width="111" height="14" rx="2" fill="url(#solderJoint)" opacity="0.7" />
+
+    <!-- Solder bridge defect / cold joint irregularity -->
+    <path d="M 175 134 Q 185 145, 195 136 Q 205 152, 215 138" fill="none" stroke="#f1f5f9" stroke-width="3" stroke-linecap="round" />
+    <circle cx="188" cy="142" r="3" fill="#ffffff" />
+    <circle cx="212" cy="144" r="2.5" fill="#e2e8f0" />
+
+    <!-- RED DEFECT MARKUP RECTANGLE (Matching User's Photo) -->
+    <rect x="138" y="120" width="139" height="80" rx="3"
+          fill="rgba(220, 38, 38, 0.08)"
+          stroke="#dc2626"
+          stroke-width="4.5"
+          stroke-linejoin="round" />
+
+    <!-- Defect Tag Pill -->
+    <rect x="180" y="80" width="96" height="22" rx="4" fill="#dc2626" />
+    <text x="228" y="95" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10.5" font-weight="800" text-anchor="middle" letter-spacing="0.5">SOLDER NG</text>
+  </g>
+
+  <!-- Overlay Watermark Metadata -->
+  <rect x="12" y="12" width="120" height="20" rx="4" fill="rgba(15, 23, 42, 0.75)" />
+  <text x="72" y="26" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="700" text-anchor="middle">OLS LONG ARM</text>
+
+  <rect x="290" y="268" width="98" height="20" rx="4" fill="rgba(220, 38, 38, 0.9)" />
+  <text x="339" y="282" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9.5" font-weight="700" text-anchor="middle">LOW VOLTAGE</text>
+</svg>

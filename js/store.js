@@ -59,7 +59,7 @@ class AppStore {
       storedReqs = JSON.parse(localStorage.getItem(this.STORAGE_KEY_REQUESTS));
     } catch (e) {}
 
-    if (!storedReqs || !Array.isArray(storedReqs) || !storedReqs[0] || !storedReqs[0].product) {
+    if (!storedReqs || !Array.isArray(storedReqs) || !storedReqs[0] || !storedReqs[0].product || !storedReqs.some(r => r.module === 'ihlr' || r.problem)) {
       localStorage.setItem(this.STORAGE_KEY_REQUESTS, JSON.stringify(INITIAL_REQUESTS));
     }
     // Load or seed users
@@ -278,7 +278,14 @@ class AppStore {
     return { nextSNo, nextIssueNo };
   }
 
-  // Action: Create Production Request / Process Audit Observation
+  generateNextIHLRSequence() {
+    const requests = this.getRequests().filter(r => r.module === 'ihlr');
+    const reqNos = requests.map(r => parseInt(r.reqNo, 10)).filter(n => !isNaN(n));
+    const nextReqNo = reqNos.length > 0 ? Math.max(...reqNos) + 1 : 1;
+    return { nextReqNo };
+  }
+
+  // Action: Create Production Request / Process Audit Observation / IHLR
   createRequest(data) {
     const requests = this.getRequests();
     const newId = data.id || this.generateNextRequestId();
@@ -293,25 +300,39 @@ class AppStore {
     const nextSNo = data.sNo || (sNos.length > 0 ? Math.max(...sNos) + 1 : requests.length + 1);
     const nextIssueNo = data.issueNo || String(nextSNo).padStart(2, '0');
 
+    const activeModule = data.module || this.getSelectedModule().id;
+    const reqNos = requests.filter(r => r.module === 'ihlr').map(r => parseInt(r.reqNo, 10)).filter(n => !isNaN(n));
+    const nextReqNo = data.reqNo || (reqNos.length > 0 ? Math.max(...reqNos) + 1 : 1);
+
     const newRequest = {
       id: newId,
+      module: activeModule,
+      reqNo: nextReqNo,
       sNo: nextSNo,
       issueNo: nextIssueNo,
       date: data.date || data.escalationDate || now.toISOString().split('T')[0],
       escalationDate: data.escalationDate || data.date || now.toISOString().split('T')[0],
       displayDate: formattedDate,
-      product: data.product || 'FWM',
-      model: data.model || 'U340',
-      processOperation: data.processOperation || data.stage || 'Laser marking',
-      shift: data.shift || 'I',
+      problem: data.problem || '',
+      product: data.product || (activeModule === 'ihlr' ? (data.model || 'OLS LONG ARM') : 'FWM'),
+      model: data.model || (activeModule === 'ihlr' ? 'OLS LONG ARM' : 'U340'),
+      problemDetectedAt: data.problemDetectedAt || '',
+      receivedFrom: data.receivedFrom || '',
+      analysisDoneBy: data.analysisDoneBy || '',
+      actualQty: data.actualQty || data.quantity || '1',
+      fourM: data.fourM || 'MAN',
+      whyWhyAnalysis: data.whyWhyAnalysis || null,
+      defectImage: data.defectImage || null,
+      processOperation: data.processOperation || data.stage || (activeModule === 'ihlr' ? (data.problemDetectedAt || 'Final Testing') : 'Laser marking'),
+      shift: data.shift || (activeModule === 'ihlr' ? 'i' : 'I'),
       repeatedOrNew: data.repeatedOrNew || 'Repeated',
-      resp: data.resp || 'MAINT',
-      observation: data.observation || data.comments || '',
+      resp: data.resp || (activeModule === 'ihlr' ? 'PROD' : 'MAINT'),
+      observation: data.observation || data.comments || (data.whyWhyAnalysis ? `W1: ${data.whyWhyAnalysis.w1}\nW2: ${data.whyWhyAnalysis.w2}\nW3: ${data.whyWhyAnalysis.w3}` : ''),
       evidenceAttachment: data.evidenceAttachment || (data.attachments && data.attachments.find(a => a.type === 'image')) || null,
-      quantity: data.quantity || '1,000',
+      quantity: data.actualQty || data.quantity || '1,000',
       unit: data.unit || 'Units',
-      line: data.line || `${data.processOperation || 'Laser marking'} Station`,
-      stage: data.processOperation || data.stage || 'Laser marking',
+      line: data.receivedFrom || data.line || `${data.processOperation || 'Laser marking'} Station`,
+      stage: data.problemDetectedAt || data.processOperation || data.stage || 'Laser marking',
       creatorId: this.currentUser.id,
       creatorName: this.currentUser.shortName,
       executorId: executor.id,

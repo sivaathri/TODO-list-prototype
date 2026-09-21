@@ -564,10 +564,16 @@ class FlowApp {
   }
 
   // ========================================================================
-  // VIEW 2: CREATE REQUEST (Process Audit Observation)
+  // VIEW 2: CREATE REQUEST (Process Audit Observation & IHLR)
   // ========================================================================
   renderCreateRequestPage() {
+    const currentMod = window.flowStore.getSelectedModule();
+    const isIHLR = currentMod && currentMod.id === 'ihlr';
+
+    this.switchProductionDetailsModule(isIHLR ? 'ihlr' : 'process_audit');
+
     const seq = window.flowStore.generateNextAuditSequence();
+    const ihlrSeq = window.flowStore.generateNextIHLRSequence();
     const nextId = window.flowStore.generateNextRequestId();
 
     const snoInput = document.getElementById('req-field-sno');
@@ -585,7 +591,122 @@ class FlowApp {
     const idInput = document.getElementById('req-field-id');
     if (idInput) idInput.value = nextId;
 
+    // IHLR sequence defaults
+    const ihlrReqNo = document.getElementById('ihlr-field-reqno');
+    if (ihlrReqNo && (!ihlrReqNo.value || ihlrReqNo.value === '1')) {
+      ihlrReqNo.value = ihlrSeq.nextReqNo;
+    }
+    const ihlrDate = document.getElementById('ihlr-field-date');
+    if (ihlrDate && !ihlrDate.value) {
+      ihlrDate.value = new Date().toISOString().split('T')[0];
+    }
+
     this.renderCreateAttachmentsList();
+  }
+
+  switchProductionDetailsModule(moduleId) {
+    const isIHLR = moduleId === 'ihlr';
+    window.flowStore.setSelectedModule(moduleId);
+    this.syncModuleContext();
+
+    const auditCard = document.getElementById('form-section-prod-details-process-audit');
+    const ihlrCard = document.getElementById('form-section-prod-details-ihlr');
+    const tabAudit = document.getElementById('tab-mod-process-audit');
+    const tabIhlr = document.getElementById('tab-mod-ihlr');
+    const pillText = document.getElementById('module-active-pill-text');
+
+    if (auditCard) auditCard.style.display = isIHLR ? 'none' : 'block';
+    if (ihlrCard) ihlrCard.style.display = isIHLR ? 'block' : 'none';
+
+    if (tabAudit) tabAudit.classList.toggle('active', !isIHLR);
+    if (tabIhlr) tabIhlr.classList.toggle('active', isIHLR);
+
+    if (pillText) {
+      pillText.textContent = isIHLR ? 'IHLR (In-House Line Rejection)' : 'Process Audit Observation';
+    }
+
+    if (isIHLR) {
+      const seq = window.flowStore.generateNextIHLRSequence();
+      const reqInput = document.getElementById('ihlr-field-reqno');
+      if (reqInput && (!reqInput.value || reqInput.value === '1')) {
+        reqInput.value = seq.nextReqNo;
+      }
+    }
+  }
+
+  loadExcelSampleIHLR() {
+    if (document.getElementById('ihlr-field-reqno')) document.getElementById('ihlr-field-reqno').value = '1';
+    if (document.getElementById('ihlr-field-date')) document.getElementById('ihlr-field-date').value = '2026-09-01';
+    if (document.getElementById('ihlr-field-shift')) document.getElementById('ihlr-field-shift').value = 'i';
+    if (document.getElementById('ihlr-field-qty')) document.getElementById('ihlr-field-qty').value = '1';
+    if (document.getElementById('ihlr-field-problem')) document.getElementById('ihlr-field-problem').value = 'Low voltage';
+    if (document.getElementById('ihlr-field-model')) document.getElementById('ihlr-field-model').value = 'OLS LONG ARM';
+    if (document.getElementById('ihlr-field-detected-at')) document.getElementById('ihlr-field-detected-at').value = 'Final Testing';
+    if (document.getElementById('ihlr-field-received-from')) document.getElementById('ihlr-field-received-from').value = 'D3/LINE';
+    if (document.getElementById('ihlr-field-analysis-by')) document.getElementById('ihlr-field-analysis-by').value = 'GURU';
+    if (document.getElementById('ihlr-field-4m')) {
+      document.getElementById('ihlr-field-4m').value = 'MAN';
+      this.update4MBadge('MAN');
+    }
+    if (document.getElementById('ihlr-field-resp')) document.getElementById('ihlr-field-resp').value = 'PROD';
+    if (document.getElementById('ihlr-field-w1')) document.getElementById('ihlr-field-w1').value = 'Low voltage';
+    if (document.getElementById('ihlr-field-w2')) document.getElementById('ihlr-field-w2').value = 'Sensor improper soldering';
+    if (document.getElementById('ihlr-field-w3')) document.getElementById('ihlr-field-w3').value = 'Skipped visual inspection';
+    if (document.getElementById('ihlr-field-w4')) document.getElementById('ihlr-field-w4').value = '';
+    if (document.getElementById('ihlr-field-w5')) document.getElementById('ihlr-field-w5').value = '';
+
+    this.loadSampleIHLRDefectImage();
+    this.showNotificationToast('Pre-filled exact IHLR data from Excel (OLS LONG ARM / Low voltage / GURU / 4M: MAN)', 'info');
+  }
+
+  update4MBadge(val) {
+    const badge = document.getElementById('ihlr-4m-badge-preview');
+    if (!badge) return;
+    badge.className = `badge-4m badge-4m-${(val || 'man').toLowerCase()}`;
+    badge.textContent = val || 'MAN';
+  }
+
+  loadSampleIHLRDefectImage() {
+    const thumbImg = document.getElementById('ihlr-evidence-thumb-img');
+    if (thumbImg) thumbImg.src = 'images/defect_ihlr_sensor.svg';
+    const nameLabel = document.getElementById('ihlr-evidence-name-label');
+    if (nameLabel) nameLabel.textContent = 'Defect_Sensor_Improper_Soldering.svg';
+    const subLabel = document.getElementById('ihlr-evidence-sub-label');
+    if (subLabel) subLabel.textContent = 'Visual evidence of sensor cavity solder joint bridge / cold solder causing low voltage at Final Testing.';
+    this.showNotificationToast('Sensor improper soldering defect photo attached', 'success');
+  }
+
+  handleIHLREvidenceFileSelect(e) {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    const file = files[0];
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      const thumbImg = document.getElementById('ihlr-evidence-thumb-img');
+      if (thumbImg) thumbImg.src = evt.target.result;
+      const nameLabel = document.getElementById('ihlr-evidence-name-label');
+      if (nameLabel) nameLabel.textContent = file.name;
+      const subLabel = document.getElementById('ihlr-evidence-sub-label');
+      if (subLabel) subLabel.textContent = `Uploaded file (${(file.size / 1024).toFixed(1)} KB)`;
+      this.showNotificationToast(`Uploaded defect photo: ${file.name}`, 'success');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  clearIHLRForm() {
+    const seq = window.flowStore.generateNextIHLRSequence();
+    if (document.getElementById('ihlr-field-reqno')) document.getElementById('ihlr-field-reqno').value = seq.nextReqNo;
+    if (document.getElementById('ihlr-field-problem')) document.getElementById('ihlr-field-problem').value = '';
+    if (document.getElementById('ihlr-field-model')) document.getElementById('ihlr-field-model').value = '';
+    if (document.getElementById('ihlr-field-detected-at')) document.getElementById('ihlr-field-detected-at').value = '';
+    if (document.getElementById('ihlr-field-received-from')) document.getElementById('ihlr-field-received-from').value = '';
+    if (document.getElementById('ihlr-field-analysis-by')) document.getElementById('ihlr-field-analysis-by').value = '';
+    if (document.getElementById('ihlr-field-w1')) document.getElementById('ihlr-field-w1').value = '';
+    if (document.getElementById('ihlr-field-w2')) document.getElementById('ihlr-field-w2').value = '';
+    if (document.getElementById('ihlr-field-w3')) document.getElementById('ihlr-field-w3').value = '';
+    if (document.getElementById('ihlr-field-w4')) document.getElementById('ihlr-field-w4').value = '';
+    if (document.getElementById('ihlr-field-w5')) document.getElementById('ihlr-field-w5').value = '';
+    this.showNotificationToast('IHLR form cleared for new entry', 'info');
   }
 
   setRepeatedType(type) {
@@ -780,57 +901,137 @@ class FlowApp {
   }
 
   handleCreateRequestSubmit() {
-    const snoVal = parseInt(document.getElementById('req-field-sno')?.value, 10) || 1;
-    const issueNoVal = document.getElementById('req-field-issueno')?.value || '01';
-    const dateVal = document.getElementById('req-field-date')?.value || new Date().toISOString().split('T')[0];
-    const productVal = document.getElementById('req-field-product')?.value || 'FWM';
-    const modelVal = document.getElementById('req-field-model')?.value || 'U340';
-    const processVal = document.getElementById('req-field-process')?.value || 'Laser marking';
-    const shiftVal = document.getElementById('req-field-shift')?.value || 'I';
-    const repeatedVal = document.getElementById('req-field-repeated-new')?.value || 'Repeated';
-    const respVal = document.getElementById('req-field-resp')?.value || 'MAINT';
-    const priorityVal = document.getElementById('req-field-priority')?.value || 'High';
-    const obsVal = document.getElementById('req-field-observation')?.value || '';
+    const ihlrCard = document.getElementById('form-section-prod-details-ihlr');
+    const isIHLR = ihlrCard && ihlrCard.style.display !== 'none';
 
-    const newReq = window.flowStore.createRequest({
-      id: document.getElementById('req-field-id')?.value,
-      sNo: snoVal,
-      issueNo: issueNoVal,
-      date: dateVal,
-      escalationDate: dateVal,
-      product: productVal,
-      model: modelVal,
-      processOperation: processVal,
-      shift: shiftVal,
-      repeatedOrNew: repeatedVal,
-      resp: respVal,
-      priority: priorityVal,
-      observation: obsVal,
-      evidenceAttachment: {
-        id: `att-evid-${Date.now()}`,
-        name: 'Inspection_Gauge_Clamp_NG.svg',
-        path: 'images/evidence_clamp_ng.svg',
-        size: '240 KB',
-        type: 'image',
-        caption: `Evidence - Issue ${issueNoVal} (${productVal} ${modelVal} - ${processVal})`
-      },
-      stage: processVal,
-      line: `${processVal} Station`,
-      executorId: document.getElementById('req-field-executor')?.value || 'USR-002',
-      attachments: [
-        {
-          id: 'att-evidence-clamp',
+    let newReq;
+
+    if (isIHLR) {
+      const reqNoVal = parseInt(document.getElementById('ihlr-field-reqno')?.value, 10) || 1;
+      const dateVal = document.getElementById('ihlr-field-date')?.value || new Date().toISOString().split('T')[0];
+      const shiftVal = document.getElementById('ihlr-field-shift')?.value || 'i';
+      const qtyVal = document.getElementById('ihlr-field-qty')?.value || '1';
+      const problemVal = document.getElementById('ihlr-field-problem')?.value || 'Low voltage';
+      const modelVal = document.getElementById('ihlr-field-model')?.value || 'OLS LONG ARM';
+      const detectedVal = document.getElementById('ihlr-field-detected-at')?.value || 'Final Testing';
+      const receivedVal = document.getElementById('ihlr-field-received-from')?.value || 'D3/LINE';
+      const analystVal = document.getElementById('ihlr-field-analysis-by')?.value || 'GURU';
+      const fourMVal = document.getElementById('ihlr-field-4m')?.value || 'MAN';
+      const respVal = document.getElementById('ihlr-field-resp')?.value || 'PROD';
+      const w1Val = document.getElementById('ihlr-field-w1')?.value || problemVal;
+      const w2Val = document.getElementById('ihlr-field-w2')?.value || '';
+      const w3Val = document.getElementById('ihlr-field-w3')?.value || '';
+      const w4Val = document.getElementById('ihlr-field-w4')?.value || '';
+      const w5Val = document.getElementById('ihlr-field-w5')?.value || '';
+
+      const defectImgSrc = document.getElementById('ihlr-evidence-thumb-img')?.src || 'images/defect_ihlr_sensor.svg';
+
+      newReq = window.flowStore.createRequest({
+        id: document.getElementById('req-field-id')?.value,
+        module: 'ihlr',
+        reqNo: reqNoVal,
+        sNo: reqNoVal,
+        issueNo: String(reqNoVal).padStart(2, '0'),
+        date: dateVal,
+        escalationDate: dateVal,
+        shift: shiftVal,
+        actualQty: qtyVal,
+        quantity: qtyVal,
+        unit: 'Units',
+        problem: problemVal,
+        product: modelVal,
+        model: modelVal,
+        problemDetectedAt: detectedVal,
+        receivedFrom: receivedVal,
+        analysisDoneBy: analystVal,
+        fourM: fourMVal,
+        resp: respVal,
+        stage: detectedVal,
+        line: receivedVal,
+        executorId: document.getElementById('req-field-executor')?.value || 'USR-003',
+        whyWhyAnalysis: {
+          w1: w1Val,
+          w2: w2Val,
+          w3: w3Val,
+          w4: w4Val,
+          w5: w5Val
+        },
+        defectImage: {
+          id: `att-defect-ihlr-${Date.now()}`,
+          name: 'Defect_Sensor_Improper_Soldering.svg',
+          path: defectImgSrc,
+          size: '210 KB',
+          type: 'image',
+          caption: `Defect: ${modelVal} ${problemVal}`
+        },
+        evidenceAttachment: {
+          id: `att-defect-ihlr-${Date.now()}`,
+          name: 'Defect_Sensor_Improper_Soldering.svg',
+          path: defectImgSrc,
+          size: '210 KB',
+          type: 'image',
+          caption: `Defect: ${modelVal} ${problemVal}`
+        },
+        observation: `W1: ${w1Val}\nW2: ${w2Val}\nW3: ${w3Val}`,
+        comments: `Problem Cause Why-Why Analysis (QA Team): W1: ${w1Val} -> W2: ${w2Val} -> W3: ${w3Val}. 4M: ${fourMVal}, Resp: ${respVal}`,
+        attachments: this.createFormFiles
+      });
+
+      this.showNotificationToast(`IHLR Rejection Req #${newReq.reqNo} (${newReq.model}) logged successfully! 4M: ${newReq.fourM}, Resp: ${newReq.resp}.`, 'success');
+    } else {
+      const snoVal = parseInt(document.getElementById('req-field-sno')?.value, 10) || 1;
+      const issueNoVal = document.getElementById('req-field-issueno')?.value || '01';
+      const dateVal = document.getElementById('req-field-date')?.value || new Date().toISOString().split('T')[0];
+      const productVal = document.getElementById('req-field-product')?.value || 'FWM';
+      const modelVal = document.getElementById('req-field-model')?.value || 'U340';
+      const processVal = document.getElementById('req-field-process')?.value || 'Laser marking';
+      const shiftVal = document.getElementById('req-field-shift')?.value || 'I';
+      const repeatedVal = document.getElementById('req-field-repeated-new')?.value || 'Repeated';
+      const respVal = document.getElementById('req-field-resp')?.value || 'MAINT';
+      const priorityVal = document.getElementById('req-field-priority')?.value || 'High';
+      const obsVal = document.getElementById('req-field-observation')?.value || '';
+
+      newReq = window.flowStore.createRequest({
+        id: document.getElementById('req-field-id')?.value,
+        module: 'process_audit',
+        sNo: snoVal,
+        issueNo: issueNoVal,
+        date: dateVal,
+        escalationDate: dateVal,
+        product: productVal,
+        model: modelVal,
+        processOperation: processVal,
+        shift: shiftVal,
+        repeatedOrNew: repeatedVal,
+        resp: respVal,
+        priority: priorityVal,
+        observation: obsVal,
+        evidenceAttachment: {
+          id: `att-evid-${Date.now()}`,
           name: 'Inspection_Gauge_Clamp_NG.svg',
+          path: 'images/evidence_clamp_ng.svg',
           size: '240 KB',
           type: 'image',
-          uploadedAt: 'Today'
+          caption: `Evidence - Issue ${issueNoVal} (${productVal} ${modelVal} - ${processVal})`
         },
-        ...this.createFormFiles
-      ],
-      comments: obsVal
-    });
+        stage: processVal,
+        line: `${processVal} Station`,
+        executorId: document.getElementById('req-field-executor')?.value || 'USR-002',
+        attachments: [
+          {
+            id: 'att-evidence-clamp',
+            name: 'Inspection_Gauge_Clamp_NG.svg',
+            size: '240 KB',
+            type: 'image',
+            uploadedAt: 'Today'
+          },
+          ...this.createFormFiles
+        ],
+        comments: obsVal
+      });
 
-    this.showNotificationToast(`Process Audit Observation Issue ${newReq.issueNo} (${newReq.product}) logged successfully! Escalated to Resp: ${newReq.resp}.`, 'success');
+      this.showNotificationToast(`Process Audit Observation Issue ${newReq.issueNo} (${newReq.product}) logged successfully! Escalated to Resp: ${newReq.resp}.`, 'success');
+    }
 
     // Reset attachments
     this.createFormFiles = [
@@ -842,94 +1043,212 @@ class FlowApp {
   }
 
   // ========================================================================
-  // VIEW 3: REQUEST DETAILS PAGE (Process Audit Observation Dossier)
+  // VIEW 3: REQUEST DETAILS PAGE (Process Audit Observation & IHLR Dossier)
   // ========================================================================
   renderRequestDetailsPage() {
     const req = window.flowStore.getRequestById(this.activeRequestId) || window.flowStore.getRequests()[0];
     if (!req) return;
 
     this.activeRequestId = req.id;
+    const isIHLR = req.module === 'ihlr' || !!req.problem;
 
-    // Header info
-    const issueNum = req.issueNo || '01';
-    const sNum = req.sNo || 1;
-    document.getElementById('det-request-id').textContent = `Observation: Issue ${issueNum} (${req.product || 'FWM'} - ${req.model || 'U340'})`;
     const badgeEl = document.getElementById('det-status-badge');
     if (badgeEl) badgeEl.outerHTML = `<span id="det-status-badge">${this.renderStatusBadge(req.status)}</span>`;
 
-    // Process Audit Observation 11 Fields
-    const detSnoIssue = document.getElementById('det-sno-issue');
-    if (detSnoIssue) detSnoIssue.textContent = `S.No: ${sNum} • Issue: ${issueNum}`;
+    if (isIHLR) {
+      // Header info for IHLR
+      const reqNum = req.reqNo || req.issueNo || '1';
+      document.getElementById('det-request-id').textContent = `IHLR Rejection: Req ${reqNum} • ${req.model || 'OLS LONG ARM'} (${req.problem || 'Low voltage'})`;
 
-    const detDate = document.getElementById('det-date');
-    if (detDate) detDate.textContent = req.escalationDate || req.displayDate || req.date;
+      const detSnoIssue = document.getElementById('det-sno-issue');
+      if (detSnoIssue) detSnoIssue.textContent = `Req NO: ${reqNum} • Qty: ${req.actualQty || req.quantity || '1'}`;
 
-    const detCreatedDateMeta = document.getElementById('det-created-date-meta');
-    if (detCreatedDateMeta) detCreatedDateMeta.textContent = `Escalation Date: ${req.escalationDate || req.displayDate}`;
+      const detDate = document.getElementById('det-date');
+      if (detDate) detDate.textContent = req.date || req.escalationDate || req.displayDate;
 
-    const detProduct = document.getElementById('det-product');
-    if (detProduct) detProduct.textContent = req.product || 'FWM';
+      const detCreatedDateMeta = document.getElementById('det-created-date-meta');
+      if (detCreatedDateMeta) detCreatedDateMeta.textContent = `Rejection Date: ${req.date || req.escalationDate || req.displayDate}`;
 
-    const detModel = document.getElementById('det-model');
-    if (detModel) detModel.textContent = req.model || 'U340';
+      const detProduct = document.getElementById('det-product');
+      if (detProduct) detProduct.textContent = req.problem || 'Low voltage';
 
-    const detProcess = document.getElementById('det-process');
-    if (detProcess) detProcess.textContent = req.processOperation || req.stage || 'Laser marking';
+      const detModel = document.getElementById('det-model');
+      if (detModel) detModel.textContent = req.model || 'OLS LONG ARM';
 
-    const detShift = document.getElementById('det-shift');
-    if (detShift) detShift.textContent = req.shift || 'I';
+      const detProcess = document.getElementById('det-process');
+      if (detProcess) detProcess.textContent = req.problemDetectedAt || req.stage || 'Final Testing';
 
-    const repeatedVal = req.repeatedOrNew || 'Repeated';
-    let repeatedHtml;
-    if (repeatedVal === 'Repeated') {
-      repeatedHtml = `<span class="badge-repeated">Repeated</span>`;
-    } else if (repeatedVal === 'New') {
-      repeatedHtml = `<span class="badge-new-issue">New</span>`;
-    } else if (repeatedVal === 'Critical') {
-      repeatedHtml = `<span class="badge badge-priority-critical">Critical</span>`;
-    } else if (repeatedVal === 'High') {
-      repeatedHtml = `<span class="badge badge-priority-high">High</span>`;
+      const detShift = document.getElementById('det-shift');
+      if (detShift) detShift.textContent = req.shift || 'i';
+
+      const fourMVal = req.fourM || 'MAN';
+      const detRepeated = document.getElementById('det-repeated-new');
+      if (detRepeated) detRepeated.innerHTML = `<span class="badge-4m badge-4m-${fourMVal.toLowerCase()}">${fourMVal}</span>`;
+
+      const detRepeatedTop = document.getElementById('det-repeated-badge-top');
+      if (detRepeatedTop) detRepeatedTop.innerHTML = `<span class="badge-4m badge-4m-${fourMVal.toLowerCase()}">${fourMVal}</span>`;
+
+      const respCode = req.resp || 'PROD';
+      const detResp = document.getElementById('det-resp');
+      if (detResp) detResp.innerHTML = `<span class="badge-resp badge-resp-${respCode.toLowerCase()}">${respCode}</span>`;
+
+      const detPriority = document.getElementById('det-priority');
+      if (detPriority) detPriority.innerHTML = `<span class="badge badge-priority-critical">Line Rejection</span>`;
+
+      const detCreator = document.getElementById('det-creator');
+      if (detCreator) detCreator.textContent = `${req.analysisDoneBy || 'GURU'} (Analysis By)`;
+
+      const detExecutor = document.getElementById('det-executor');
+      if (detExecutor) detExecutor.textContent = `Received From: ${req.receivedFrom || 'D3/LINE'}`;
+
+      const detTrackingId = document.getElementById('det-tracking-id');
+      if (detTrackingId) detTrackingId.textContent = req.id;
+
+      // Problem Cause Why-Why Analysis display
+      const detComments = document.getElementById('det-comments');
+      if (detComments) {
+        const why = req.whyWhyAnalysis;
+        if (why && (why.w1 || why.w2 || why.w3)) {
+          detComments.innerHTML = `
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              ${why.w1 ? `<div style="display: flex; align-items: center; gap: 8px;"><span class="w-pill" style="min-width: 36px; height: 26px; font-size: 11px;">W1:</span> <span style="color: #1d4ed8; font-weight: 600;">${this.escapeHtml(why.w1)}</span></div>` : ''}
+              ${why.w2 ? `<div style="display: flex; align-items: center; gap: 8px;"><span class="w-pill" style="min-width: 36px; height: 26px; font-size: 11px;">W2:</span> <span style="color: #1d4ed8; font-weight: 600;">${this.escapeHtml(why.w2)}</span></div>` : ''}
+              ${why.w3 ? `<div style="display: flex; align-items: center; gap: 8px;"><span class="w-pill" style="min-width: 36px; height: 26px; font-size: 11px;">W3:</span> <span style="color: #1d4ed8; font-weight: 600;">${this.escapeHtml(why.w3)}</span></div>` : ''}
+              ${why.w4 ? `<div style="display: flex; align-items: center; gap: 8px;"><span class="w-pill" style="min-width: 36px; height: 26px; font-size: 11px;">W4:</span> <span style="color: #1d4ed8; font-weight: 600;">${this.escapeHtml(why.w4)}</span></div>` : ''}
+              ${why.w5 ? `<div style="display: flex; align-items: center; gap: 8px;"><span class="w-pill w-root" style="min-width: 36px; height: 26px; font-size: 11px;">W5:</span> <span style="color: #1d4ed8; font-weight: 600;">${this.escapeHtml(why.w5)}</span></div>` : ''}
+            </div>
+          `;
+        } else {
+          detComments.textContent = req.comments || req.observation || 'No Why-Why analysis logged';
+        }
+      }
+
+      // Defect Image Preview
+      const detEvidenceBox = document.getElementById('det-evidence-box');
+      const defectImg = req.defectImage?.path || req.evidenceAttachment?.path || 'images/defect_ihlr_sensor.svg';
+      const defectCaption = req.defectImage?.caption || `Defect: ${req.model || 'OLS LONG ARM'} ${req.problem || 'Low voltage'}`;
+      if (detEvidenceBox) {
+        detEvidenceBox.innerHTML = `
+          <span class="meta-label" style="font-weight: 700; color: var(--navy-900);">Defect Image</span>
+          <div class="evidence-upload-card" style="margin-top: 4px; background: #f8fafc; cursor: pointer;"
+            onclick="window.flowApp.openEvidenceLightbox('${defectImg}', '${defectCaption}')">
+            <div class="evidence-preview-thumb">
+              <img src="${defectImg}" alt="Defect Image">
+              <span class="table-evidence-badge">RED MARKUP</span>
+            </div>
+            <div style="flex: 1;">
+              <strong style="font-size: 13px; color: var(--navy-900); display: block;">Defect_Sensor_Improper_Soldering.svg</strong>
+              <span class="text-xs text-muted">Click to enlarge sensor defect photo with red solder markup</span>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm">
+              Zoom Preview
+            </button>
+          </div>
+        `;
+      }
+
     } else {
-      repeatedHtml = `<span class="badge badge-priority-normal">${repeatedVal}</span>`;
-    }
+      // Header info for Process Audit Observation
+      const issueNum = req.issueNo || '01';
+      const sNum = req.sNo || 1;
+      document.getElementById('det-request-id').textContent = `Observation: Issue ${issueNum} (${req.product || 'FWM'} - ${req.model || 'U340'})`;
 
-    const detRepeated = document.getElementById('det-repeated-new');
-    if (detRepeated) detRepeated.innerHTML = repeatedHtml;
+      const detSnoIssue = document.getElementById('det-sno-issue');
+      if (detSnoIssue) detSnoIssue.textContent = `S.No: ${sNum} • Issue: ${issueNum}`;
 
-    const detRepeatedTop = document.getElementById('det-repeated-badge-top');
-    if (detRepeatedTop) detRepeatedTop.innerHTML = repeatedHtml;
+      const detDate = document.getElementById('det-date');
+      if (detDate) detDate.textContent = req.escalationDate || req.displayDate || req.date;
 
-    const respCode = req.resp || 'MAINT';
-    const detResp = document.getElementById('det-resp');
-    if (detResp) detResp.innerHTML = `<span class="badge-resp badge-resp-${respCode.toLowerCase()}">${respCode}</span>`;
+      const detCreatedDateMeta = document.getElementById('det-created-date-meta');
+      if (detCreatedDateMeta) detCreatedDateMeta.textContent = `Escalation Date: ${req.escalationDate || req.displayDate}`;
 
-    const detPriority = document.getElementById('det-priority');
-    if (detPriority) detPriority.innerHTML = `<span class="badge badge-priority-${(req.priority || 'high').toLowerCase()}">${req.priority || 'High'}</span>`;
+      const detProduct = document.getElementById('det-product');
+      if (detProduct) detProduct.textContent = req.product || 'FWM';
 
-    const detCreator = document.getElementById('det-creator');
-    if (detCreator) detCreator.textContent = `${req.creatorName} (Auditor)`;
+      const detModel = document.getElementById('det-model');
+      if (detModel) detModel.textContent = req.model || 'U340';
 
-    const detExecutor = document.getElementById('det-executor');
-    if (detExecutor) detExecutor.textContent = `${req.executorName} (${respCode} Lead)`;
+      const detProcess = document.getElementById('det-process');
+      if (detProcess) detProcess.textContent = req.processOperation || req.stage || 'Laser marking';
 
-    const detTrackingId = document.getElementById('det-tracking-id');
-    if (detTrackingId) detTrackingId.textContent = req.id;
+      const detShift = document.getElementById('det-shift');
+      if (detShift) detShift.textContent = req.shift || 'I';
 
-    // Issue / Observation bullet formatting
-    const detComments = document.getElementById('det-comments');
-    if (detComments) {
-      const rawObs = (req.observation || req.comments || '').trim();
-      if (rawObs) {
-        const lines = rawObs.split('\n').filter(l => l.trim().length > 0);
-        detComments.innerHTML = lines.map(line => {
-          line = line.trim();
-          if (line.startsWith('•') || line.startsWith('-')) {
-            return `<div><span style="color: #dc2626; font-weight: bold; margin-right: 4px;">•</span>${this.escapeHtml(line.replace(/^[•\-]\s*/, ''))}</div>`;
-          }
-          return `<div>${this.escapeHtml(line)}</div>`;
-        }).join('');
+      const repeatedVal = req.repeatedOrNew || 'Repeated';
+      let repeatedHtml;
+      if (repeatedVal === 'Repeated') {
+        repeatedHtml = `<span class="badge-repeated">Repeated</span>`;
+      } else if (repeatedVal === 'New') {
+        repeatedHtml = `<span class="badge-new-issue">New</span>`;
+      } else if (repeatedVal === 'Critical') {
+        repeatedHtml = `<span class="badge badge-priority-critical">Critical</span>`;
+      } else if (repeatedVal === 'High') {
+        repeatedHtml = `<span class="badge badge-priority-high">High</span>`;
       } else {
-        detComments.textContent = 'None';
+        repeatedHtml = `<span class="badge badge-priority-normal">${repeatedVal}</span>`;
+      }
+
+      const detRepeated = document.getElementById('det-repeated-new');
+      if (detRepeated) detRepeated.innerHTML = repeatedHtml;
+
+      const detRepeatedTop = document.getElementById('det-repeated-badge-top');
+      if (detRepeatedTop) detRepeatedTop.innerHTML = repeatedHtml;
+
+      const respCode = req.resp || 'MAINT';
+      const detResp = document.getElementById('det-resp');
+      if (detResp) detResp.innerHTML = `<span class="badge-resp badge-resp-${respCode.toLowerCase()}">${respCode}</span>`;
+
+      const detPriority = document.getElementById('det-priority');
+      if (detPriority) detPriority.innerHTML = `<span class="badge badge-priority-${(req.priority || 'high').toLowerCase()}">${req.priority || 'High'}</span>`;
+
+      const detCreator = document.getElementById('det-creator');
+      if (detCreator) detCreator.textContent = `${req.creatorName} (Auditor)`;
+
+      const detExecutor = document.getElementById('det-executor');
+      if (detExecutor) detExecutor.textContent = `${req.executorName} (${respCode} Lead)`;
+
+      const detTrackingId = document.getElementById('det-tracking-id');
+      if (detTrackingId) detTrackingId.textContent = req.id;
+
+      // Issue / Observation bullet formatting
+      const detComments = document.getElementById('det-comments');
+      if (detComments) {
+        const rawObs = (req.observation || req.comments || '').trim();
+        if (rawObs) {
+          const lines = rawObs.split('\n').filter(l => l.trim().length > 0);
+          detComments.innerHTML = lines.map(line => {
+            line = line.trim();
+            if (line.startsWith('•') || line.startsWith('-')) {
+              return `<div><span style="color: #dc2626; font-weight: bold; margin-right: 4px;">•</span>${this.escapeHtml(line.replace(/^[•\-]\s*/, ''))}</div>`;
+            }
+            return `<div>${this.escapeHtml(line)}</div>`;
+          }).join('');
+        } else {
+          detComments.textContent = 'None';
+        }
+      }
+
+      const detEvidenceBox = document.getElementById('det-evidence-box');
+      const evidImg = req.evidenceAttachment?.path || 'images/evidence_clamp_ng.svg';
+      const evidCap = req.evidenceAttachment?.caption || 'Evidence: Laser Marking Clamp NG';
+      if (detEvidenceBox) {
+        detEvidenceBox.innerHTML = `
+          <span class="meta-label" style="font-weight: 700; color: var(--navy-900);">Evidence / Escalation Attachment</span>
+          <div class="evidence-upload-card" style="margin-top: 4px; background: #f8fafc; cursor: pointer;"
+            onclick="window.flowApp.openEvidenceLightbox('${evidImg}', '${evidCap}')">
+            <div class="evidence-preview-thumb">
+              <img src="${evidImg}" alt="Clamp NG defect evidence">
+              <span class="table-evidence-badge">RED MARKUP</span>
+            </div>
+            <div style="flex: 1;">
+              <strong style="font-size: 13px; color: var(--navy-900); display: block;">${req.evidenceAttachment?.name || 'Inspection_Gauge_Clamp_NG.svg'}</strong>
+              <span class="text-xs text-muted">Click to open high-resolution defect markup preview</span>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm">
+              View Evidence
+            </button>
+          </div>
+        `;
       }
     }
 

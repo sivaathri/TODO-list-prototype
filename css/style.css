@@ -3530,4 +3530,184 @@ a {
   to { transform: scale(1); opacity: 1; }
 }
 
+/* ==========================================================================
+   IHLR (In-House Line Rejection) Specific Styles
+   ========================================================================== */
+
+/* 4M Badges */
+.badge-4m {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 800;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.badge-4m-man {
+  background: #fef08a;
+  color: #854d0e;
+  border: 1px solid #fde047;
+}
+
+.badge-4m-machine {
+  background: #e0e7ff;
+  color: #3730a3;
+  border: 1px solid #c7d2fe;
+}
+
+.badge-4m-material {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.badge-4m-method {
+  background: #f3e8ff;
+  color: #6b21a8;
+  border: 1px solid #e9d5ff;
+}
+
+/* Module Section Switcher Tabs */
+.module-tab-selector {
+  display: inline-flex;
+  background: #f1f5f9;
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  gap: 4px;
+}
+
+.module-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #64748b;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.module-tab-btn:hover {
+  color: #1e293b;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.module-tab-btn.active {
+  color: #0f172a;
+  background: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.module-tab-btn .tab-badge-num {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background: #94a3b8;
+}
+
+.module-tab-btn.active .tab-badge-num {
+  background: var(--primary, #2563eb);
+}
+
+.module-tab-btn.active.tab-ihlr .tab-badge-num {
+  background: #dc2626;
+}
+
+/* Why-Why Analysis Card */
+.why-why-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 16px 20px;
+}
+
+.why-why-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed #cbd5e1;
+}
+
+.why-why-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.why-why-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: #2563eb;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.why-why-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.why-why-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.w-pill {
+  min-width: 44px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: #dc2626;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.w-pill.w-root {
+  background: #fef08a;
+  color: #854d0e;
+  border-color: #fde047;
+}
+
+.w-input {
+  flex: 1;
+  color: #1d4ed8;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.w-input::placeholder {
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+
 

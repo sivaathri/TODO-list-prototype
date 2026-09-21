@@ -648,8 +648,25 @@
           <!-- Request Form -->
           <form id="form-create-request" onsubmit="event.preventDefault(); window.flowApp.handleCreateRequestSubmit();">
 
-            <!-- Section 1: Production Details (Process Audit Observation) -->
-            <div class="form-section-card" id="form-section-prod-details">
+            <!-- Module Switcher Tabs for Section 1 (Process Audit vs IHLR) -->
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+              <div class="module-tab-selector" id="create-module-tab-selector">
+                <button type="button" class="module-tab-btn active" id="tab-mod-process-audit" onclick="window.flowApp.switchProductionDetailsModule('process_audit')">
+                  <span class="tab-badge-num">1</span>
+                  <span>Process Audit Observation</span>
+                </button>
+                <button type="button" class="module-tab-btn tab-ihlr" id="tab-mod-ihlr" onclick="window.flowApp.switchProductionDetailsModule('ihlr')">
+                  <span class="tab-badge-num">2</span>
+                  <span>IHLR (In-House Line Rejection)</span>
+                </button>
+              </div>
+              <div id="module-active-pill-badge" class="badge badge-priority-normal">
+                Active Module: <strong id="module-active-pill-text" style="margin-left: 4px;">Process Audit Observation</strong>
+              </div>
+            </div>
+
+            <!-- Section 1A: Production Details (Process Audit Observation) -->
+            <div class="form-section-card" id="form-section-prod-details-process-audit">
               <div
                 style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 8px;">
                 <h2 class="form-section-title" style="margin-bottom: 0;">
@@ -754,7 +771,8 @@
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label" for="req-field-repeated-new">Priority <span class="required">*</span></label>
+                  <label class="form-label" for="req-field-repeated-new">Priority <span
+                      class="required">*</span></label>
                   <select id="req-field-repeated-new" class="form-select" required>
                     <option value="Repeated" selected>Repeated</option>
                     <option value="New">New</option>
@@ -875,6 +893,265 @@
               <input type="hidden" id="req-field-unit" value="Units">
               <input type="hidden" id="req-field-stage" value="Laser marking">
               <input type="hidden" id="req-field-line" value="Laser marking station">
+            </div>
+
+            <!-- Section 1B: Production Details (IHLR - In-House Line Rejection) -->
+            <div class="form-section-card" id="form-section-prod-details-ihlr" style="display: none;">
+              <div
+                style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 8px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <h2 class="form-section-title" style="margin-bottom: 0;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                      <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                    1. Production Details
+                  </h2>
+                  <span class="badge" style="background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; font-weight: 700; font-size: 11px;">
+                    IHLR • In-House Line Rejection
+                  </span>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <button type="button" class="btn btn-secondary btn-sm"
+                    onclick="window.flowApp.loadExcelSampleIHLR()"
+                    title="Pre-fill with exact data from your IHLR Excel sheet">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
+                      <polyline points="13 2 13 9 20 9" />
+                    </svg>
+                    ⚡ Load Excel Sample (OLS LONG ARM / Low voltage)
+                  </button>
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="window.flowApp.clearIHLRForm()">
+                    Clear
+                  </button>
+                </div>
+              </div>
+              <p class="form-section-desc">Floor rejection tracking, inspection detection points, QA Why-Why root cause analysis, 4M categorization, and department accountability.</p>
+
+              <!-- Row 1: Req NO, Date, Shift, Actual Qty -->
+              <div class="form-grid-4" style="margin-bottom: 18px;">
+                <div class="form-group">
+                  <label class="form-label" for="ihlr-field-reqno">Req NO <span class="required">*</span></label>
+                  <input type="number" id="ihlr-field-reqno" class="form-input" value="1" min="1" required>
+                  <span class="form-help">Sequential rejection request index</span>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="ihlr-field-date">Date <span class="required">*</span></label>
+                  <input type="date" id="ihlr-field-date" class="form-input" value="2026-09-01" required>
+                  <span class="form-help">Rejection incident date</span>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="ihlr-field-shift">Shift <span class="required">*</span></label>
+                  <select id="ihlr-field-shift" class="form-select" required>
+                    <option value="i" selected>i (Shift 1 / Morning)</option>
+                    <option value="ii">ii (Shift 2 / Afternoon)</option>
+                    <option value="iii">iii (Shift 3 / Night)</option>
+                  </select>
+                  <span class="form-help">Operating production shift</span>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="ihlr-field-qty">Actual Qty <span class="required">*</span></label>
+                  <input type="number" id="ihlr-field-qty" class="form-input" value="1" min="1" required>
+                  <span class="form-help">Rejected / defective unit quantity</span>
+                </div>
+              </div>
+
+              <!-- Row 2: Problem, Model, Problem Detected at, Received From -->
+              <div class="form-grid-4" style="margin-bottom: 18px;">
+                <div class="form-group">
+                  <label class="form-label" for="ihlr-field-problem">Problem <span class="required">*</span></label>
+                  <input type="text" id="ihlr-field-problem" class="form-input" list="ihlr-datalist-problem"
+                    placeholder="e.g. Low voltage" value="Low voltage" required>
+                  <datalist id="ihlr-datalist-problem">
+                    <option value="Low voltage">Low voltage</option>
+                    <option value="Sensor improper soldering">Sensor improper soldering</option>
+                    <option value="Timing angle inspection NG">Timing angle inspection NG</option>
+                    <option value="Dimension out of tolerance">Dimension out of tolerance</option>
+                    <option value="Loose crimp connection">Loose crimp connection</option>
+                    <option value="Surface scratch / dent">Surface scratch / dent</option>
+                  </datalist>
+                  <span class="form-help">Observed rejection symptom / fault</span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="ihlr-field-model">Model <span class="required">*</span></label>
+                  <input type="text" id="ihlr-field-model" class="form-input" list="ihlr-datalist-model"
+                    placeholder="e.g. OLS LONG ARM" value="OLS LONG ARM" required>
+                  <datalist id="ihlr-datalist-model">
+                    <option value="OLS LONG ARM">OLS LONG ARM</option>
+                    <option value="OLS SHORT ARM">OLS SHORT ARM</option>
+                    <option value="U340">U340</option>
+                    <option value="K92">K92</option>
+                    <option value="M120">M120</option>
+                    <option value="V400">V400</option>
+                  </datalist>
+                  <span class="form-help">Component model identification</span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="ihlr-field-detected-at">Problem Detected at <span class="required">*</span></label>
+                  <input type="text" id="ihlr-field-detected-at" class="form-input" list="ihlr-datalist-detected"
+                    placeholder="e.g. Final Testing" value="Final Testing" required>
+                  <datalist id="ihlr-datalist-detected">
+                    <option value="Final Testing">Final Testing</option>
+                    <option value="Sub Assembly">Sub Assembly</option>
+                    <option value="In-Line Vision Inspection">In-Line Vision Inspection</option>
+                    <option value="EOL Electrical Test">EOL Electrical Test</option>
+                    <option value="Pre-Dispatch Inspection">Pre-Dispatch Inspection</option>
+                  </datalist>
+                  <span class="form-help">Inspection station / detection gate</span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="ihlr-field-received-from">Received From <span class="required">*</span></label>
+                  <input type="text" id="ihlr-field-received-from" class="form-input" list="ihlr-datalist-received-from"
+                    placeholder="e.g. D3/LINE" value="D3/LINE" required>
+                  <datalist id="ihlr-datalist-received-from">
+                    <option value="D3/LINE">D3/LINE</option>
+                    <option value="Line 1 Assembly">Line 1 Assembly</option>
+                    <option value="Line 2 Stator">Line 2 Stator</option>
+                    <option value="SMT Line 1">SMT Line 1</option>
+                    <option value="Sub-Assembly Area">Sub-Assembly Area</option>
+                  </datalist>
+                  <span class="form-help">Originating line or work cell</span>
+                </div>
+              </div>
+
+              <!-- Row 3: Analysis done By, 4M, Resp -->
+              <div class="form-grid-3" style="margin-bottom: 18px;">
+                <div class="form-group">
+                  <label class="form-label" for="ihlr-field-analysis-by">Analysis done By <span class="required">*</span></label>
+                  <input type="text" id="ihlr-field-analysis-by" class="form-input" list="ihlr-datalist-analysts"
+                    placeholder="e.g. GURU" value="GURU" required>
+                  <datalist id="ihlr-datalist-analysts">
+                    <option value="GURU">GURU (QA Lead)</option>
+                    <option value="Siva">Siva (Production Planning)</option>
+                    <option value="Kumar Vel">Kumar Vel (Assembly Lead)</option>
+                    <option value="Ravi Chandran">Ravi Chandran (Quality Lead)</option>
+                  </datalist>
+                  <span class="form-help">QA engineer / analyst conducting investigation</span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="ihlr-field-4m" style="display: flex; align-items: center; justify-content: space-between;">
+                    <span>4M <span class="required">*</span></span>
+                    <span class="badge-4m badge-4m-man" id="ihlr-4m-badge-preview">MAN</span>
+                  </label>
+                  <select id="ihlr-field-4m" class="form-select" onchange="window.flowApp.update4MBadge(this.value)" required>
+                    <option value="MAN" selected>MAN (Operator error / Skill / Skipped inspection)</option>
+                    <option value="MACHINE">MACHINE (Equipment / Tooling / Sensor calibration)</option>
+                    <option value="MATERIAL">MATERIAL (Raw parts variance / Supplier defect)</option>
+                    <option value="METHOD">METHOD (Standard Operating Procedure / Work instruction)</option>
+                  </select>
+                  <span class="form-help">Root cause 4M classification category</span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="ihlr-field-resp">Resp <span class="required">*</span></label>
+                  <select id="ihlr-field-resp" class="form-select" required>
+                    <option value="PROD" selected>PROD - Production &amp; Line Ops</option>
+                    <option value="QA">QA - Quality Assurance &amp; Metrology</option>
+                    <option value="MAINT">MAINT - Maintenance Department</option>
+                    <option value="TOOL">TOOL - Tooling &amp; Die Maintenance</option>
+                    <option value="ENG">ENG - Engineering &amp; Industrialization</option>
+                  </select>
+                  <span class="form-help">Accountable department for immediate floor containment &amp; CAPA</span>
+                </div>
+              </div>
+
+              <!-- Row 4: Defect Image -->
+              <div class="form-group" style="margin-bottom: 18px;">
+                <label class="form-label" style="justify-content: space-between;">
+                  <span>Defect Image <span class="required">*</span></span>
+                  <button type="button" class="text-xs"
+                    style="color: var(--primary); background: none; border: none; cursor: pointer; text-decoration: underline;"
+                    onclick="window.flowApp.loadSampleIHLRDefectImage()">
+                    Attach Sensor Solder Defect Photo
+                  </button>
+                </label>
+
+                <div class="evidence-upload-card" id="ihlr-evidence-card">
+                  <div class="evidence-preview-thumb"
+                    onclick="window.flowApp.openEvidenceLightbox('images/defect_ihlr_sensor.svg', 'Defect Image: OLS LONG ARM Low Voltage (Sensor Improper Soldering)')"
+                    title="Click to enlarge defect photo">
+                    <img id="ihlr-evidence-thumb-img" src="images/defect_ihlr_sensor.svg" alt="Sensor solder defect photo">
+                    <span class="table-evidence-badge">RED MARKUP</span>
+                  </div>
+                  <div style="flex: 1;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                      <strong style="font-size: 13.5px; color: var(--navy-900);" id="ihlr-evidence-name-label">
+                        Defect_Sensor_Improper_Soldering.svg
+                      </strong>
+                      <span class="badge badge-priority-critical" style="font-size: 10px;">DEFECT MARKED</span>
+                    </div>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;" id="ihlr-evidence-sub-label">
+                      Visual evidence of sensor cavity solder joint bridge / cold solder causing low voltage at Final Testing.
+                    </p>
+                    <div style="display: flex; gap: 8px;">
+                      <button type="button" class="btn btn-secondary btn-sm"
+                        onclick="window.flowApp.openEvidenceLightbox('images/defect_ihlr_sensor.svg', 'Defect Image: OLS LONG ARM Low Voltage (Sensor Improper Soldering)')">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <circle cx="11" cy="11" r="8" />
+                          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                          <line x1="11" y1="8" x2="11" y2="14" />
+                          <line x1="8" y1="11" x2="14" y2="11" />
+                        </svg>
+                        Zoom Preview
+                      </button>
+                      <button type="button" class="btn btn-secondary btn-sm"
+                        onclick="document.getElementById('file-input-ihlr-evidence').click()">
+                        Upload New Photo
+                      </button>
+                      <input type="file" id="file-input-ihlr-evidence" accept="image/*,.pdf" style="display: none;"
+                        onchange="window.flowApp.handleIHLREvidenceFileSelect(event)">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Row 5: Problem Cause Why-Why Analysis (QA Team) -->
+              <div class="form-group">
+                <div class="why-why-card">
+                  <div class="why-why-header-row">
+                    <div class="why-why-title">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2">
+                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                      </svg>
+                      Problem Cause Why-Why Analysis (QA Team)
+                    </div>
+                    <span class="why-why-tag">5-Why Root Cause Determination</span>
+                  </div>
+
+                  <div class="why-why-list">
+                    <div class="why-why-row">
+                      <span class="w-pill">W1:</span>
+                      <input type="text" id="ihlr-field-w1" class="form-input w-input" value="Low voltage"
+                        placeholder="Direct symptom / problem observed at testing" required>
+                    </div>
+                    <div class="why-why-row">
+                      <span class="w-pill">W2:</span>
+                      <input type="text" id="ihlr-field-w2" class="form-input w-input" value="Sensor improper soldering"
+                        placeholder="Why did failure happen? (e.g. solder joint variance / cold joint)" required>
+                    </div>
+                    <div class="why-why-row">
+                      <span class="w-pill">W3:</span>
+                      <input type="text" id="ihlr-field-w3" class="form-input w-input" value="Skipped visual inspection"
+                        placeholder="Why was defect not caught? (e.g. visual inspection step missed)" required>
+                    </div>
+                    <div class="why-why-row">
+                      <span class="w-pill">W4:</span>
+                      <input type="text" id="ihlr-field-w4" class="form-input w-input"
+                        placeholder="Systemic reason (e.g. High takt rate without dedicated inspection fixture)">
+                    </div>
+                    <div class="why-why-row">
+                      <span class="w-pill w-root">W5:</span>
+                      <input type="text" id="ihlr-field-w5" class="form-input w-input"
+                        placeholder="Root cause & policy (e.g. Missing automated AOI camera validation gate)">
+                    </div>
+                  </div>
+                </div>
+                <span class="form-help">Iterative 5-Why analysis to trace the root cause from symptom (W1) to preventable root cause (W5).</span>
+              </div>
             </div>
 
             <!-- Section 2: Assign Executor -->
