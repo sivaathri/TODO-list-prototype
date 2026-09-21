@@ -71,8 +71,8 @@
                     <rect width="20" height="16" x="2" y="4" rx="2" />
                     <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
                   </svg>
-                  <input type="email" id="login-email" class="clean-form-input" value="siva@gmail.com" placeholder="name@company.com"
-                    required autocomplete="username" />
+                  <input type="email" id="login-email" class="clean-form-input" value="siva@gmail.com"
+                    placeholder="name@company.com" required autocomplete="username" />
                 </div>
               </div>
 
@@ -165,7 +165,7 @@
          ==================================================================== -->
     <div id="view-module-select" class="module-select-wrapper hidden">
       <div class="module-bg-ambient"></div>
-      
+
       <div class="module-select-container">
         <!-- Header / Brand Section -->
         <header class="module-select-header">
@@ -181,7 +181,8 @@
               <div class="module-welcome-text">Logged in as <strong id="mod-user-name">Siva</strong></div>
               <div class="module-role-pill" id="mod-user-role">Creator • Production Planning</div>
             </div>
-            <button type="button" class="module-logout-btn" onclick="window.flowApp.logout()" title="Switch User / Logout">
+            <button type="button" class="module-logout-btn" onclick="window.flowApp.logout()"
+              title="Switch User / Logout">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                 <polyline points="16 17 21 12 16 7" />
@@ -196,27 +197,31 @@
         <div class="module-title-block">
           <span class="module-kicker">Workspace Portal Selection</span>
           <h1 class="module-main-title">Select Operational System</h1>
-          <p class="module-subtitle">Please select one of the core manufacturing modules below to access the main workflow workspace.</p>
+          <p class="module-subtitle">Please select one of the core manufacturing modules below to access the main
+            workflow workspace.</p>
         </div>
 
         <!-- The 3 Requested Menus / Cards Grid -->
         <div class="module-cards-grid">
 
           <!-- Card 1: Process Audit Observation -->
-          <div class="module-card card-audit" id="card-mod-process-audit" onclick="window.flowApp.selectModule('process_audit')">
+          <div class="module-card card-audit" id="card-mod-process-audit"
+            onclick="window.flowApp.selectModule('process_audit')">
             <div class="module-card-top">
               <span class="module-index-badge">1</span>
               <span class="module-status-chip chip-audit">Audit &amp; Compliance</span>
             </div>
             <div class="module-icon-box icon-audit">
-              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                 <polyline points="14 2 14 8 20 8"></polyline>
                 <path d="m9 15 2 2 4-4"></path>
               </svg>
             </div>
             <h2 class="module-card-title">Process Audit Observation</h2>
-            <p class="module-card-desc">Line observation logging, 4M compliance checklists, non-conformance audits, floor corrective actions &amp; verification reviews.</p>
+            <p class="module-card-desc">Line observation logging, 4M compliance checklists, non-conformance audits,
+              floor corrective actions &amp; verification reviews.</p>
             <div class="module-card-features">
               <span class="module-feature-tag">4M Audit Checks</span>
               <span class="module-feature-tag">Line Observation</span>
@@ -224,7 +229,8 @@
             </div>
             <div class="module-card-footer">
               <span class="module-action-cta">Launch Module</span>
-              <svg class="module-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <svg class="module-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
                 <polyline points="12 5 19 12 12 19"></polyline>
               </svg>
@@ -238,14 +244,16 @@
               <span class="module-status-chip chip-rejection">Line Rejection</span>
             </div>
             <div class="module-icon-box icon-ihlr">
-              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="12" y1="8" x2="12" y2="12"></line>
                 <line x1="12" y1="16" x2="12.01" y2="16"></line>
               </svg>
             </div>
             <h2 class="module-card-title">IHLR</h2>
-            <p class="module-card-desc">In-House Line Rejection monitoring, scrap analysis, defect categorization, root cause containment &amp; PPM performance tracking.</p>
+            <p class="module-card-desc">In-House Line Rejection monitoring, scrap analysis, defect categorization, root
+              cause containment &amp; PPM performance tracking.</p>
             <div class="module-card-features">
               <span class="module-feature-tag">Line Rejection</span>
               <span class="module-feature-tag">Scrap Monitoring</span>
@@ -253,7 +261,8 @@
             </div>
             <div class="module-card-footer">
               <span class="module-action-cta">Launch Module</span>
-              <svg class="module-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <svg class="module-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
                 <polyline points="12 5 19 12 12 19"></polyline>
               </svg>
@@ -267,12 +276,16 @@
               <span class="module-status-chip chip-tryout">Tool &amp; Die Trial</span>
             </div>
             <div class="module-icon-box icon-tryout">
-              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z">
+                </path>
               </svg>
             </div>
             <h2 class="module-card-title">Try Out Status</h2>
-            <p class="module-card-desc">Tool &amp; die trial run monitoring, pilot batch testing, engineering change validations &amp; multi-tier sample sign-offs.</p>
+            <p class="module-card-desc">Tool &amp; die trial run monitoring, pilot batch testing, engineering change
+              validations &amp; multi-tier sample sign-offs.</p>
             <div class="module-card-features">
               <span class="module-feature-tag">Trial Run Status</span>
               <span class="module-feature-tag">Pilot Batch Run</span>
@@ -280,7 +293,8 @@
             </div>
             <div class="module-card-footer">
               <span class="module-action-cta">Launch Module</span>
-              <svg class="module-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <svg class="module-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
                 <polyline points="12 5 19 12 12 19"></polyline>
               </svg>
@@ -296,7 +310,8 @@
             <line x1="12" y1="16" x2="12" y2="12"></line>
             <line x1="12" y1="8" x2="12.01" y2="8"></line>
           </svg>
-          <span>Select any module to open the main workspace screen. You can switch between modules at any time from the top navigation bar.</span>
+          <span>Select any module to open the main workspace screen. You can switch between modules at any time from the
+            top navigation bar.</span>
         </div>
       </div>
     </div>
@@ -340,7 +355,7 @@
             </div>
           </div>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="m9 18 6-6-6-6"/>
+            <path d="m9 18 6-6-6-6" />
           </svg>
         </div>
 
@@ -396,33 +411,38 @@
 
             <!-- Module Switcher Badge in Top Nav -->
             <div class="top-nav-module-container" id="top-module-switcher">
-              <button type="button" class="top-module-btn" onclick="window.flowApp.toggleModuleDropdown(event)" id="btn-active-module" title="Click to Switch Module">
+              <button type="button" class="top-module-btn" onclick="window.flowApp.toggleModuleDropdown(event)"
+                id="btn-active-module" title="Click to Switch Module">
                 <span class="module-indicator-dot" id="top-module-dot"></span>
                 <span class="top-module-pre">Module:</span>
                 <span class="top-module-label" id="top-module-name">Process Audit Observation</span>
-                <svg class="top-module-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg class="top-module-caret" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2">
                   <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
               </button>
-              
+
               <!-- Dropdown Menu for Switching Modules -->
               <div class="top-module-menu hidden" id="top-module-dropdown">
                 <div class="top-module-menu-header">Active Manufacturing Systems</div>
-                <button type="button" class="top-module-item" id="top-menu-item-process_audit" onclick="window.flowApp.selectModule('process_audit')">
+                <button type="button" class="top-module-item" id="top-menu-item-process_audit"
+                  onclick="window.flowApp.selectModule('process_audit')">
                   <span class="top-module-num">1</span>
                   <div class="top-module-item-info">
                     <strong>Process Audit Observation</strong>
                     <small>Audit checklists, 4M compliance &amp; CAPA</small>
                   </div>
                 </button>
-                <button type="button" class="top-module-item" id="top-menu-item-ihlr" onclick="window.flowApp.selectModule('ihlr')">
+                <button type="button" class="top-module-item" id="top-menu-item-ihlr"
+                  onclick="window.flowApp.selectModule('ihlr')">
                   <span class="top-module-num mod-num-ihlr">2</span>
                   <div class="top-module-item-info">
                     <strong>IHLR</strong>
                     <small>In-House Line Rejection &amp; scrap monitoring</small>
                   </div>
                 </button>
-                <button type="button" class="top-module-item" id="top-menu-item-try_out" onclick="window.flowApp.selectModule('try_out')">
+                <button type="button" class="top-module-item" id="top-menu-item-try_out"
+                  onclick="window.flowApp.selectModule('try_out')">
                   <span class="top-module-num mod-num-tryout">3</span>
                   <div class="top-module-item-info">
                     <strong>Try Out Status</strong>
@@ -478,7 +498,7 @@
           <div class="page-header-row">
             <div class="page-header-title-block">
               <h1 class="page-title"> Dashboard</h1>
-            
+
             </div>
             <div class="page-actions-group">
               <button class="btn btn-primary" onclick="window.flowApp.navigateTo('create-request')">
@@ -548,13 +568,16 @@
             <div class="card-header">
               <div>
                 <span class="card-title" id="table-creator-title">Process Audit Observation Register</span>
-                <span class="text-xs text-muted" style="display: block; margin-top: 2px;">Standard floor observation log &bull; 1. Production Details tracking matrix</span>
+                <span class="text-xs text-muted" style="display: block; margin-top: 2px;">Standard floor observation log
+                  &bull; 1. Production Details tracking matrix</span>
               </div>
               <div style="display: flex; gap: 8px;">
-                <button class="btn btn-secondary btn-sm" onclick="window.flowApp.loadExcelSampleObservation(); window.flowApp.navigateTo('create-request');">
+                <button class="btn btn-secondary btn-sm"
+                  onclick="window.flowApp.loadExcelSampleObservation(); window.flowApp.navigateTo('create-request');">
                   + Log Observation
                 </button>
-                <button class="btn btn-secondary btn-sm" onclick="window.flowApp.navigateTo('request-tracking')">View All Tracking</button>
+                <button class="btn btn-secondary btn-sm" onclick="window.flowApp.navigateTo('request-tracking')">View
+                  All Tracking</button>
               </div>
             </div>
             <div class="table-container" style="overflow-x: auto;">
@@ -569,7 +592,7 @@
                     <th style="white-space: nowrap;">Process / Operation</th>
                     <th style="white-space: nowrap; width: 100px;">Evidence/ Escalation Attachments</th>
                     <th style="white-space: nowrap; width: 60px;">shift</th>
-                    <th style="white-space: nowrap; width: 110px;">Repeated /New</th>
+                    <th style="white-space: nowrap; width: 110px;">Priority</th>
                     <th style="min-width: 260px;">Issue/Observation</th>
                     <th style="white-space: nowrap; width: 80px;">Resp</th>
                     <th style="white-space: nowrap; width: 90px;">Action</th>
@@ -641,7 +664,8 @@
 
             <!-- Section 1: Production Details (Process Audit Observation) -->
             <div class="form-section-card" id="form-section-prod-details">
-              <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 8px;">
+              <div
+                style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 8px;">
                 <h2 class="form-section-title" style="margin-bottom: 0;">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -650,8 +674,13 @@
                   1. Production Details
                 </h2>
                 <div style="display: flex; gap: 8px;">
-                  <button type="button" class="btn btn-secondary btn-sm" onclick="window.flowApp.loadExcelSampleObservation()" title="Pre-fill with exact data from your observation sheet">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                  <button type="button" class="btn btn-secondary btn-sm"
+                    onclick="window.flowApp.loadExcelSampleObservation()"
+                    title="Pre-fill with exact data from your observation sheet">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
+                      <polyline points="13 2 13 9 20 9" />
+                    </svg>
                     ⚡ Load Excel Sample (FWM / U340)
                   </button>
                   <button type="button" class="btn btn-secondary btn-sm" onclick="window.flowApp.clearAuditForm()">
@@ -659,7 +688,8 @@
                   </button>
                 </div>
               </div>
-              <p class="form-section-desc">Key manufacturing parameters, model identification, process operation, escalation classification, and audit observations.</p>
+              <p class="form-section-desc">Key manufacturing parameters, model identification, process operation,
+                escalation classification, and audit observations.</p>
 
               <!-- Row 1: S. no, Issue No, Escalation Date, shift -->
               <div class="form-grid-4" style="margin-bottom: 18px;">
@@ -670,7 +700,8 @@
                 </div>
                 <div class="form-group">
                   <label class="form-label" for="req-field-issueno">Issue No <span class="required">*</span></label>
-                  <input type="text" id="req-field-issueno" class="form-input" placeholder="e.g. 01" value="01" required>
+                  <input type="text" id="req-field-issueno" class="form-input" placeholder="e.g. 01" value="01"
+                    required>
                   <span class="form-help">Floor issue code / index</span>
                 </div>
                 <div class="form-group">
@@ -693,7 +724,8 @@
               <div class="form-grid-4" style="margin-bottom: 18px;">
                 <div class="form-group">
                   <label class="form-label" for="req-field-product">Product <span class="required">*</span></label>
-                  <input type="text" id="req-field-product" class="form-input" list="datalist-products" placeholder="e.g. FWM" value="FWM" required>
+                  <input type="text" id="req-field-product" class="form-input" list="datalist-products"
+                    placeholder="e.g. FWM" value="FWM" required>
                   <datalist id="datalist-products">
                     <option value="FWM">Flywheel Magneto (FWM)</option>
                     <option value="CDI">Capacitor Discharge Ignition (CDI)</option>
@@ -706,7 +738,8 @@
 
                 <div class="form-group">
                   <label class="form-label" for="req-field-model">Model <span class="required">*</span></label>
-                  <input type="text" id="req-field-model" class="form-input" list="datalist-models" placeholder="e.g. U340" value="U340" required>
+                  <input type="text" id="req-field-model" class="form-input" list="datalist-models"
+                    placeholder="e.g. U340" value="U340" required>
                   <datalist id="datalist-models">
                     <option value="U340">U340</option>
                     <option value="K92">K92</option>
@@ -718,8 +751,10 @@
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label" for="req-field-process">Process / Operation <span class="required">*</span></label>
-                  <input type="text" id="req-field-process" class="form-input" list="datalist-processes" placeholder="e.g. Laser marking" value="Laser marking" required>
+                  <label class="form-label" for="req-field-process">Process / Operation <span
+                      class="required">*</span></label>
+                  <input type="text" id="req-field-process" class="form-input" list="datalist-processes"
+                    placeholder="e.g. Laser marking" value="Laser marking" required>
                   <datalist id="datalist-processes">
                     <option value="Laser marking">Laser marking</option>
                     <option value="Timing Angle Inspection">Timing Angle Inspection</option>
@@ -733,13 +768,15 @@
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label">Repeated /New <span class="required">*</span></label>
+                  <label class="form-label">Priority <span class="required">*</span></label>
                   <input type="hidden" id="req-field-repeated-new" value="Repeated">
                   <div class="repeated-toggle-group">
-                    <button type="button" class="repeated-toggle-btn active type-repeated" id="btn-toggle-repeated" onclick="window.flowApp.setRepeatedType('Repeated')">
+                    <button type="button" class="repeated-toggle-btn active type-repeated" id="btn-toggle-repeated"
+                      onclick="window.flowApp.setRepeatedType('Repeated')">
                       Repeated
                     </button>
-                    <button type="button" class="repeated-toggle-btn type-new" id="btn-toggle-new" onclick="window.flowApp.setRepeatedType('New')">
+                    <button type="button" class="repeated-toggle-btn type-new" id="btn-toggle-new"
+                      onclick="window.flowApp.setRepeatedType('New')">
                       New
                     </button>
                   </div>
@@ -750,7 +787,8 @@
               <!-- Row 3: Resp (Responsibility) & Priority -->
               <div class="form-grid-2" style="margin-bottom: 18px;">
                 <div class="form-group">
-                  <label class="form-label" for="req-field-resp">Resp (Responsible Department) <span class="required">*</span></label>
+                  <label class="form-label" for="req-field-resp">Resp (Responsible Department) <span
+                      class="required">*</span></label>
                   <select id="req-field-resp" class="form-select" required>
                     <option value="MAINT" selected>MAINT - Maintenance Department</option>
                     <option value="PROD">PROD - Production &amp; Line Ops</option>
@@ -776,33 +814,48 @@
               <div class="form-group" style="margin-bottom: 18px;">
                 <label class="form-label" style="justify-content: space-between;">
                   <span>Evidence/ Escalation Attachments <span class="required">*</span></span>
-                  <button type="button" class="text-xs" style="color: var(--primary); background: none; border: none; cursor: pointer; text-decoration: underline;" onclick="window.flowApp.loadSampleClampEvidence()">
+                  <button type="button" class="text-xs"
+                    style="color: var(--primary); background: none; border: none; cursor: pointer; text-decoration: underline;"
+                    onclick="window.flowApp.loadSampleClampEvidence()">
                     Attach Clamp NG Defect Photo
                   </button>
                 </label>
-                
+
                 <div class="evidence-upload-card" id="evidence-active-card">
-                  <div class="evidence-preview-thumb" onclick="window.flowApp.openEvidenceLightbox('images/evidence_clamp_ng.svg', 'Evidence: Laser Marking Clamp NG (Timing Angle Inspection Variance)')" title="Click to enlarge defect evidence photo">
+                  <div class="evidence-preview-thumb"
+                    onclick="window.flowApp.openEvidenceLightbox('images/evidence_clamp_ng.svg', 'Evidence: Laser Marking Clamp NG (Timing Angle Inspection Variance)')"
+                    title="Click to enlarge defect evidence photo">
                     <img id="evidence-thumb-img" src="images/evidence_clamp_ng.svg" alt="Inspection clamp NG evidence">
                     <span class="table-evidence-badge">RED MARKUP</span>
                   </div>
                   <div style="flex: 1;">
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-                      <strong style="font-size: 13.5px; color: var(--navy-900);" id="evidence-name-label">Inspection_Gauge_Clamp_NG.svg</strong>
+                    <div
+                      style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                      <strong style="font-size: 13.5px; color: var(--navy-900);"
+                        id="evidence-name-label">Inspection_Gauge_Clamp_NG.svg</strong>
                       <span class="badge badge-priority-critical" style="font-size: 10px;">DEFECT MARKED</span>
                     </div>
                     <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;" id="evidence-sub-label">
                       Inspection gauge clamp NG due to improper tightening. Timing angle inspection accuracy error.
                     </p>
                     <div style="display: flex; gap: 8px;">
-                      <button type="button" class="btn btn-secondary btn-sm" onclick="window.flowApp.openEvidenceLightbox('images/evidence_clamp_ng.svg', 'Evidence: Laser Marking Clamp NG')">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                      <button type="button" class="btn btn-secondary btn-sm"
+                        onclick="window.flowApp.openEvidenceLightbox('images/evidence_clamp_ng.svg', 'Evidence: Laser Marking Clamp NG')">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2">
+                          <circle cx="11" cy="11" r="8" />
+                          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                          <line x1="11" y1="8" x2="11" y2="14" />
+                          <line x1="8" y1="11" x2="14" y2="11" />
+                        </svg>
                         Zoom Preview
                       </button>
-                      <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('file-input-evidence').click()">
+                      <button type="button" class="btn btn-secondary btn-sm"
+                        onclick="document.getElementById('file-input-evidence').click()">
                         Upload New Photo
                       </button>
-                      <input type="file" id="file-input-evidence" accept="image/*,.pdf" style="display: none;" onchange="window.flowApp.handleEvidenceFileSelect(event)">
+                      <input type="file" id="file-input-evidence" accept="image/*,.pdf" style="display: none;"
+                        onchange="window.flowApp.handleEvidenceFileSelect(event)">
                     </div>
                   </div>
                 </div>
@@ -815,17 +868,23 @@
                     Issue/Observation <span class="required">*</span>
                   </label>
                   <div style="display: flex; gap: 6px;">
-                    <button type="button" class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="window.flowApp.insertObservationBullet()">
+                    <button type="button" class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 11px;"
+                      onclick="window.flowApp.insertObservationBullet()">
                       • Add Bullet
                     </button>
-                    <button type="button" class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="window.flowApp.insertObservationTemplate()">
+                    <button type="button" class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 11px;"
+                      onclick="window.flowApp.insertObservationTemplate()">
                       Insert Standard Template
                     </button>
                   </div>
                 </div>
-                <textarea id="req-field-observation" class="form-textarea" style="min-height: 110px; font-family: monospace, sans-serif; font-size: 13px;" placeholder="• Inspection gauge clamp NG due to this During inspection Timing angle inspection Accuracy NG...&#10;• After our inspection clamp restored but not properly tightened.. Used magnest of tightening Support" required>• Inspection gauge clamp NG due to this During inspection Timing angle inspection Accuracy NG...
+                <textarea id="req-field-observation" class="form-textarea"
+                  style="min-height: 110px; font-family: monospace, sans-serif; font-size: 13px;"
+                  placeholder="• Inspection gauge clamp NG due to this During inspection Timing angle inspection Accuracy NG...&#10;• After our inspection clamp restored but not properly tightened.. Used magnest of tightening Support"
+                  required>• Inspection gauge clamp NG due to this During inspection Timing angle inspection Accuracy NG...
 • After our inspection clamp restored but not properly tightened.. Used magnest of tightening Support</textarea>
-                <span class="form-help">Detailed floor observation notes. Use bullet points (•) for multi-step observations or non-conformances.</span>
+                <span class="form-help">Detailed floor observation notes. Use bullet points (•) for multi-step
+                  observations or non-conformances.</span>
               </div>
 
               <!-- Hidden / compatibility fields for legacy workflow -->
@@ -974,34 +1033,51 @@
             <!-- Left Column: Specs & Original Files -->
             <div style="display: flex; flex-direction: column; gap: 20px;">
 
-              <!-- Production Information Card -->
+              <!-- Process Audit Observation Information Card (1. Production Details) -->
               <div class="card">
                 <div class="card-header">
-                  <span class="card-title">Production Information</span>
-                  <span class="text-xs text-muted" id="det-created-date-meta">Created on 03 Sep 2026</span>
+                  <div>
+                    <span class="card-title">1. Production Details &amp; Observation</span>
+                    <span class="text-xs text-muted" style="display: block;" id="det-created-date-meta">Created on 03
+                      Sep 2026</span>
+                  </div>
+                  <span id="det-repeated-badge-top"><span class="badge-repeated">Repeated</span></span>
                 </div>
                 <div class="card-body">
                   <div class="meta-field-grid" style="margin-bottom: 18px;">
                     <div class="meta-field">
-                      <span class="meta-label">Date</span>
-                      <span class="meta-value" id="det-date">03 Sep 2026</span>
+                      <span class="meta-label">S. no / Issue No</span>
+                      <span class="meta-value" id="det-sno-issue"
+                        style="font-weight: 700; color: var(--navy-900);">S.No: 1 &bull; Issue: 01</span>
                     </div>
                     <div class="meta-field">
-                      <span class="meta-label">Shift</span>
-                      <span class="meta-value" id="det-shift">Morning</span>
+                      <span class="meta-label">Escalation Date</span>
+                      <span class="meta-value" id="det-date">9/3/2026</span>
                     </div>
                     <div class="meta-field">
-                      <span class="meta-label">Production Target</span>
-                      <span class="meta-value" id="det-production"
-                        style="font-weight: 700; color: var(--navy-900);">1,250 Units</span>
+                      <span class="meta-label">Product</span>
+                      <span class="meta-value font-medium" id="det-product" style="color: var(--primary);">FWM</span>
                     </div>
                     <div class="meta-field">
-                      <span class="meta-label">Stage</span>
-                      <span class="meta-value" id="det-stage">Assembly</span>
+                      <span class="meta-label">Model</span>
+                      <span class="meta-value font-medium" id="det-model">U340</span>
                     </div>
                     <div class="meta-field">
-                      <span class="meta-label">Production Line</span>
-                      <span class="meta-value" id="det-line">Line A - Main Chassis</span>
+                      <span class="meta-label">Process / Operation</span>
+                      <span class="meta-value font-medium" id="det-process">Laser marking</span>
+                    </div>
+                    <div class="meta-field">
+                      <span class="meta-label">shift</span>
+                      <span class="meta-value" id="det-shift">I (Shift 1)</span>
+                    </div>
+                    <div class="meta-field">
+                      <span class="meta-label">Priority</span>
+                      <span class="meta-value" id="det-repeated-new"><span class="badge-repeated">Repeated</span></span>
+                    </div>
+                    <div class="meta-field">
+                      <span class="meta-label">Resp (Accountable)</span>
+                      <span class="meta-value" id="det-resp"><span
+                          class="badge-resp badge-resp-maint">MAINT</span></span>
                     </div>
                     <div class="meta-field">
                       <span class="meta-label">Priority</span>
@@ -1009,20 +1085,49 @@
                           class="badge badge-priority-high">High</span></span>
                     </div>
                     <div class="meta-field">
-                      <span class="meta-label">Created By</span>
-                      <span class="meta-value" id="det-creator">Siva (Production Planner)</span>
+                      <span class="meta-label">Auditor / Creator</span>
+                      <span class="meta-value" id="det-creator">Siva (Planning)</span>
                     </div>
                     <div class="meta-field">
-                      <span class="meta-label">Assigned Executor</span>
-                      <span class="meta-value" id="det-executor">Mr. Kumar (Assembly Lead)</span>
+                      <span class="meta-label">Assigned Floor Lead</span>
+                      <span class="meta-value" id="det-executor">Mr. Kumar (Assembly/Maint)</span>
+                    </div>
+                    <div class="meta-field">
+                      <span class="meta-label">System Tracking ID</span>
+                      <span class="meta-value text-xs text-muted" id="det-tracking-id">REQ-1001</span>
                     </div>
                   </div>
 
-                  <div class="form-group">
-                    <span class="meta-label">Comments & Notes</span>
+                  <!-- Issue / Observation Box -->
+                  <div class="form-group" style="margin-top: 14px;">
+                    <span class="meta-label" style="font-weight: 700; color: var(--navy-900);">Issue / Observation
+                      Details</span>
                     <div id="det-comments"
-                      style="padding: 12px; background: var(--bg-surface-subtle); border-radius: var(--radius-md); font-size: 13px; color: var(--navy-800); margin-top: 4px;">
-                      None
+                      style="padding: 14px 16px; background: #fff5f5; border: 1px solid #fecaca; border-radius: var(--radius-md); font-size: 13px; color: #1e293b; margin-top: 4px; line-height: 1.55; white-space: pre-line; font-family: system-ui, sans-serif;">
+                      • Inspection gauge clamp NG due to this During inspection Timing angle inspection Accuracy NG...
+                      • After our inspection clamp restored but not properly tightened.. Used magnest of tightening
+                      Support
+                    </div>
+                  </div>
+
+                  <!-- Visual Evidence Callout -->
+                  <div class="form-group" style="margin-top: 16px;" id="det-evidence-box">
+                    <span class="meta-label" style="font-weight: 700; color: var(--navy-900);">Evidence / Escalation
+                      Attachment</span>
+                    <div class="evidence-upload-card" style="margin-top: 4px; background: #f8fafc; cursor: pointer;"
+                      onclick="window.flowApp.openEvidenceLightbox('images/evidence_clamp_ng.svg', 'Evidence: Laser Marking Clamp NG')">
+                      <div class="evidence-preview-thumb">
+                        <img src="images/evidence_clamp_ng.svg" alt="Clamp NG defect evidence">
+                        <span class="table-evidence-badge">RED MARKUP</span>
+                      </div>
+                      <div style="flex: 1;">
+                        <strong
+                          style="font-size: 13px; color: var(--navy-900); display: block;">Inspection_Gauge_Clamp_NG.svg</strong>
+                        <span class="text-xs text-muted">Click to open high-resolution defect markup preview</span>
+                      </div>
+                      <button type="button" class="btn btn-secondary btn-sm">
+                        View Evidence
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -1802,7 +1907,8 @@
               <span class="card-title">User Role Management &amp; Permissions</span>
               <div style="display: flex; gap: 8px; align-items: center;">
                 <span class="badge badge-approved">Role-Based Access Active</span>
-                <button class="btn btn-primary btn-sm" onclick="window.flowApp.openCreateUserModal()">+ Create User</button>
+                <button class="btn btn-primary btn-sm" onclick="window.flowApp.openCreateUserModal()">+ Create
+                  User</button>
               </div>
             </div>
             <div class="table-container">
@@ -2023,13 +2129,16 @@
             </div>
             <div class="card-body">
               <div style="display: flex; align-items: center; gap: 24px; flex-wrap: wrap;">
-                <div class="user-avatar-small" id="prof-display-avatar" style="width: 72px; height: 72px; font-size: 26px; font-weight: 700; border-radius: 50%;">S</div>
+                <div class="user-avatar-small" id="prof-display-avatar"
+                  style="width: 72px; height: 72px; font-size: 26px; font-weight: 700; border-radius: 50%;">S</div>
                 <div style="flex: 1; min-width: 240px;">
                   <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 6px;">
-                    <h2 id="prof-display-name" style="font-size: 22px; font-weight: 700; color: var(--navy-900); margin: 0;">Siva</h2>
+                    <h2 id="prof-display-name"
+                      style="font-size: 22px; font-weight: 700; color: var(--navy-900); margin: 0;">Siva</h2>
                     <span id="prof-display-badge" class="badge badge-draft">Request Creator</span>
                   </div>
-                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-top: 14px;">
+                  <div
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-top: 14px;">
                     <div class="meta-field">
                       <span class="meta-label">Employee ID</span>
                       <span class="meta-value" id="prof-display-id">USR-001</span>
@@ -2050,7 +2159,8 @@
 
           <!-- Users Directory Table & Management -->
           <div class="card">
-            <div class="card-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+            <div class="card-header"
+              style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
               <div style="display: flex; align-items: center; gap: 10px;">
                 <span class="card-title">Production &amp; System Users Directory</span>
                 <span class="badge badge-draft" id="prof-users-count-badge">8 Users</span>
@@ -2188,18 +2298,20 @@
         </div>
         <form id="form-create-user" onsubmit="event.preventDefault(); window.flowApp.handleCreateUserSubmit();">
           <div class="modal-body">
-          
+
 
             <div class="form-group" style="margin-bottom: 14px;">
               <label class="form-label" for="newuser-name">Full Name <span class="required">*</span></label>
-              <input type="text" id="newuser-name" class="form-input" placeholder="e.g. Ramesh Kumar" required 
+              <input type="text" id="newuser-name" class="form-input" placeholder="e.g. Ramesh Kumar" required
                 oninput="window.flowApp.autoSuggestUserEmail(this.value)" />
             </div>
 
-            <div class="form-grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+            <div class="form-grid-2"
+              style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
               <div class="form-group">
                 <label class="form-label" for="newuser-role">System Role <span class="required">*</span></label>
-                <select id="newuser-role" class="form-select" required onchange="window.flowApp.handleNewUserRoleChange(this.value)">
+                <select id="newuser-role" class="form-select" required
+                  onchange="window.flowApp.handleNewUserRoleChange(this.value)">
                   <option value="creator">Creator (Production Planner)</option>
                   <option value="executor" selected>Executor (Assembly Lead)</option>
                   <option value="approver1">Approver 1 (Production Manager)</option>
@@ -2214,7 +2326,8 @@
               </div>
             </div>
 
-            <div class="form-grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+            <div class="form-grid-2"
+              style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
               <div class="form-group">
                 <label class="form-label" for="newuser-email">Email Address <span class="required">*</span></label>
                 <input type="email" id="newuser-email" class="form-input" placeholder="name@inel.co.in" required />
@@ -2222,7 +2335,8 @@
 
               <div class="form-group">
                 <label class="form-label" for="newuser-password">Password <span class="required">*</span></label>
-                <input type="password" id="newuser-password" class="form-input" placeholder="" value="" required autocomplete="new-password" />
+                <input type="password" id="newuser-password" class="form-input" placeholder="" value="" required
+                  autocomplete="new-password" />
               </div>
             </div>
           </div>
@@ -2235,14 +2349,20 @@
     </div>
 
     <!-- Evidence Lightbox Modal (For viewing Clamp NG and audit photos) -->
-    <div id="modal-evidence-preview" class="evidence-modal-backdrop hidden" onclick="window.flowApp.closeEvidenceLightbox(event)">
+    <div id="modal-evidence-preview" class="evidence-modal-backdrop hidden"
+      onclick="window.flowApp.closeEvidenceLightbox(event)">
       <div class="evidence-modal-box" onclick="event.stopPropagation()">
         <div class="evidence-modal-header">
           <div class="evidence-modal-title">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
             <span id="evidence-modal-title-text">Evidence: Laser Marking Clamp NG</span>
           </div>
-          <button type="button" class="modal-close-btn" onclick="window.flowApp.closeEvidenceLightbox()" style="color: white; background: none; border: none; font-size: 22px; cursor: pointer;">&times;</button>
+          <button type="button" class="modal-close-btn" onclick="window.flowApp.closeEvidenceLightbox()"
+            style="color: white; background: none; border: none; font-size: 22px; cursor: pointer;">&times;</button>
         </div>
         <div class="evidence-modal-body">
           <img id="evidence-modal-image" src="images/evidence_clamp_ng.svg" alt="Audit Evidence Full Preview" />
@@ -2251,7 +2371,8 @@
           <div style="font-size: 12px; color: var(--text-muted);" id="evidence-modal-caption">
             Red polygon markup: Inspection clamp restoration improperly tightened using magnet support.
           </div>
-          <button type="button" class="btn btn-secondary btn-sm" onclick="window.flowApp.closeEvidenceLightbox()">Close</button>
+          <button type="button" class="btn btn-secondary btn-sm"
+            onclick="window.flowApp.closeEvidenceLightbox()">Close</button>
         </div>
       </div>
     </div>

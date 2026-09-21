@@ -540,34 +540,226 @@ class FlowApp {
 
     const requests = window.flowStore.getRequests();
 
-    tbody.innerHTML = requests.map(r => `
-      <tr>
-        <td><span class="table-id-link" onclick="window.flowApp.openDetails('${r.id}')">${r.id}</span></td>
-        <td>${r.displayDate}</td>
-        <td><span class="font-medium">${r.shift}</span></td>
-        <td>${r.quantity} ${r.unit}</td>
-        <td><span class="font-medium">${r.stage}</span></td>
-       
-        <td>${this.renderStatusBadge(r.status)}</td>
-        <td class="text-xs text-muted">${r.activityTimeline[0]?.timestamp || r.displayDate}</td>
-        <td>
-          <button class="btn btn-secondary btn-sm" onclick="window.flowApp.openDetails('${r.id}')">
-            View Details
-          </button>
-        </td>
-      </tr>
-    `).join('');
+    tbody.innerHTML = requests.map((r, idx) => {
+      const sNo = r.sNo || (idx + 1);
+      const issueNo = r.issueNo || String(sNo).padStart(2, '0');
+      const dateStr = r.escalationDate || r.displayDate || r.date;
+      const product = r.product || 'FWM';
+      const model = r.model || 'U340';
+      const process = r.processOperation || r.stage || 'Laser marking';
+      const shift = r.shift || 'I';
+      const repeated = r.repeatedOrNew || 'Repeated';
+      const repeatedBadge = repeated === 'Repeated'
+        ? `<span class="badge-repeated">Repeated</span>`
+        : `<span class="badge-new-issue">New</span>`;
+      const resp = r.resp || 'MAINT';
+      const respBadge = `<span class="badge-resp badge-resp-${resp.toLowerCase()}">${resp}</span>`;
+
+      const rawObs = (r.observation || r.comments || '').trim();
+      const obsLines = rawObs.split('\n').filter(l => l.trim().length > 0);
+      const formattedObs = obsLines.map(line => {
+        line = line.trim();
+        if (line.startsWith('•') || line.startsWith('-')) {
+          return `<div><span class="obs-bullet">•</span>${this.escapeHtml(line.replace(/^[•\-]\s*/, ''))}</div>`;
+        }
+        return `<div>${this.escapeHtml(line)}</div>`;
+      }).join('');
+
+      const evidenceImg = (r.evidenceAttachment && r.evidenceAttachment.path) ? r.evidenceAttachment.path : 'images/evidence_clamp_ng.svg';
+      const evidenceCaption = (r.evidenceAttachment && r.evidenceAttachment.caption) ? r.evidenceAttachment.caption : `Evidence - Issue ${issueNo} (${product} ${model})`;
+
+      return `
+        <tr>
+          <td style="font-weight: 700; color: var(--navy-900); text-align: center;">${sNo}</td>
+          <td><span class="table-id-link font-bold" onclick="window.flowApp.openDetails('${r.id}')">${issueNo}</span></td>
+          <td style="white-space: nowrap;">${dateStr}</td>
+          <td><strong style="color: var(--primary); font-size: 13px;">${product}</strong></td>
+          <td><span class="font-medium">${model}</span></td>
+          <td><span style="font-size: 12.5px;">${process}</span></td>
+          <td class="table-evidence-cell">
+            <div class="table-evidence-thumb" onclick="window.flowApp.openEvidenceLightbox('${evidenceImg}', '${evidenceCaption}')" title="Click to inspect clamp defect photo">
+              <img src="${evidenceImg}" alt="Defect Evidence" />
+              <span class="table-evidence-badge">DEFECT</span>
+            </div>
+          </td>
+          <td style="font-weight: 700; text-align: center;">${shift}</td>
+          <td>${repeatedBadge}</td>
+          <td>
+            <div class="table-observation-text">
+              ${formattedObs || '<span class="text-muted">No observation recorded</span>'}
+            </div>
+          </td>
+          <td>${respBadge}</td>
+          <td>
+            <button class="btn btn-secondary btn-sm" onclick="window.flowApp.openDetails('${r.id}')" title="View Observation Dossier">
+              View
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join('');
   }
 
   // ========================================================================
-  // VIEW 2: CREATE REQUEST
+  // VIEW 2: CREATE REQUEST (Process Audit Observation)
   // ========================================================================
   renderCreateRequestPage() {
+    const seq = window.flowStore.generateNextAuditSequence();
     const nextId = window.flowStore.generateNextRequestId();
+
+    const snoInput = document.getElementById('req-field-sno');
+    if (snoInput && (!snoInput.value || snoInput.value === '1')) {
+      snoInput.value = seq.nextSNo;
+    }
+    const issueInput = document.getElementById('req-field-issueno');
+    if (issueInput && (!issueInput.value || issueInput.value === '01')) {
+      issueInput.value = seq.nextIssueNo;
+    }
+    const dateInput = document.getElementById('req-field-date');
+    if (dateInput && !dateInput.value) {
+      dateInput.value = new Date().toISOString().split('T')[0];
+    }
     const idInput = document.getElementById('req-field-id');
     if (idInput) idInput.value = nextId;
 
     this.renderCreateAttachmentsList();
+  }
+
+  setRepeatedType(type) {
+    const hiddenField = document.getElementById('req-field-repeated-new');
+    if (hiddenField) hiddenField.value = type;
+
+    const btnRepeated = document.getElementById('btn-toggle-repeated');
+    const btnNew = document.getElementById('btn-toggle-new');
+
+    if (btnRepeated) {
+      btnRepeated.classList.toggle('active', type === 'Repeated');
+    }
+    if (btnNew) {
+      btnNew.classList.toggle('active', type === 'New');
+    }
+  }
+
+  loadExcelSampleObservation() {
+    // Fill the exact inputs from the user's Excel sheet screenshot
+    const snoInput = document.getElementById('req-field-sno');
+    if (snoInput) snoInput.value = '1';
+
+    const issueInput = document.getElementById('req-field-issueno');
+    if (issueInput) issueInput.value = '01';
+
+    const dateInput = document.getElementById('req-field-date');
+    if (dateInput) dateInput.value = '2026-09-03';
+
+    const shiftSelect = document.getElementById('req-field-shift');
+    if (shiftSelect) shiftSelect.value = 'I';
+
+    const productInput = document.getElementById('req-field-product');
+    if (productInput) productInput.value = 'FWM';
+
+    const modelInput = document.getElementById('req-field-model');
+    if (modelInput) modelInput.value = 'U340';
+
+    const processInput = document.getElementById('req-field-process');
+    if (processInput) processInput.value = 'Laser marking';
+
+    this.setRepeatedType('Repeated');
+
+    const respSelect = document.getElementById('req-field-resp');
+    if (respSelect) respSelect.value = 'MAINT';
+
+    const obsTextarea = document.getElementById('req-field-observation');
+    if (obsTextarea) {
+      obsTextarea.value = '• Inspection gauge clamp NG due to this During inspection Timing angle inspection Accuracy NG...\n• After our inspection clamp restored but not properly tightened.. Used magnest of tightening Support';
+    }
+
+    this.loadSampleClampEvidence();
+    this.showNotificationToast('Pre-filled exact Process Audit Observation from Excel row #1 (FWM / U340 / Laser marking)', 'info');
+  }
+
+  clearAuditForm() {
+    const seq = window.flowStore.generateNextAuditSequence();
+    if (document.getElementById('req-field-sno')) document.getElementById('req-field-sno').value = seq.nextSNo;
+    if (document.getElementById('req-field-issueno')) document.getElementById('req-field-issueno').value = seq.nextIssueNo;
+    if (document.getElementById('req-field-product')) document.getElementById('req-field-product').value = '';
+    if (document.getElementById('req-field-model')) document.getElementById('req-field-model').value = '';
+    if (document.getElementById('req-field-process')) document.getElementById('req-field-process').value = '';
+    if (document.getElementById('req-field-observation')) document.getElementById('req-field-observation').value = '';
+    this.showNotificationToast('Form cleared for new entry', 'info');
+  }
+
+  insertObservationBullet() {
+    const obsEl = document.getElementById('req-field-observation');
+    if (!obsEl) return;
+    const bullet = '• ';
+    const val = obsEl.value;
+    if (!val || val.endsWith('\n')) {
+      obsEl.value = val + bullet;
+    } else {
+      obsEl.value = val + '\n' + bullet;
+    }
+    obsEl.focus();
+  }
+
+  insertObservationTemplate() {
+    const obsEl = document.getElementById('req-field-observation');
+    if (!obsEl) return;
+    obsEl.value = '• Initial observation: [Describe non-conformance or variance observed at station]\n• Interim floor containment: [Immediate corrective action or clamp adjustment applied]';
+    obsEl.focus();
+  }
+
+  loadSampleClampEvidence() {
+    const thumbImg = document.getElementById('evidence-thumb-img');
+    if (thumbImg) thumbImg.src = 'images/evidence_clamp_ng.svg';
+    const nameLabel = document.getElementById('evidence-name-label');
+    if (nameLabel) nameLabel.textContent = 'Inspection_Gauge_Clamp_NG.svg';
+    const subLabel = document.getElementById('evidence-sub-label');
+    if (subLabel) subLabel.textContent = 'Inspection gauge clamp NG due to improper tightening. Timing angle inspection accuracy variance.';
+    this.showNotificationToast('Clamp NG defect photo attached as visual evidence', 'success');
+  }
+
+  handleEvidenceFileSelect(e) {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    const file = files[0];
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      const thumbImg = document.getElementById('evidence-thumb-img');
+      if (thumbImg) thumbImg.src = evt.target.result;
+      const nameLabel = document.getElementById('evidence-name-label');
+      if (nameLabel) nameLabel.textContent = file.name;
+      const subLabel = document.getElementById('evidence-sub-label');
+      if (subLabel) subLabel.textContent = `Uploaded file (${(file.size / 1024).toFixed(1)} KB)`;
+      this.showNotificationToast(`Uploaded: ${file.name}`, 'success');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  openEvidenceLightbox(imgSrc, title) {
+    const modal = document.getElementById('modal-evidence-preview');
+    const modalImg = document.getElementById('evidence-modal-image');
+    const titleText = document.getElementById('evidence-modal-title-text');
+    if (modal) modal.classList.remove('hidden');
+    if (modalImg) modalImg.src = imgSrc || 'images/evidence_clamp_ng.svg';
+    if (titleText) titleText.textContent = title || 'Evidence: Laser Marking Clamp NG';
+  }
+
+  closeEvidenceLightbox(e) {
+    if (e && e.target && e.target.closest('.evidence-modal-box') && !e.target.closest('.modal-close-btn') && !e.target.closest('button')) {
+      return;
+    }
+    const modal = document.getElementById('modal-evidence-preview');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
   }
 
   renderCreateAttachmentsList() {
@@ -575,7 +767,7 @@ class FlowApp {
     if (!container) return;
 
     if (this.createFormFiles.length === 0) {
-      container.innerHTML = '<div class="text-xs text-muted" style="text-align: center; padding: 8px;">No files attached yet.</div>';
+      container.innerHTML = '<div class="text-xs text-muted" style="text-align: center; padding: 8px;">No additional files attached yet.</div>';
       return;
     }
 
@@ -625,25 +817,61 @@ class FlowApp {
   }
 
   handleCreateRequestSubmit() {
+    const snoVal = parseInt(document.getElementById('req-field-sno')?.value, 10) || 1;
+    const issueNoVal = document.getElementById('req-field-issueno')?.value || '01';
+    const dateVal = document.getElementById('req-field-date')?.value || new Date().toISOString().split('T')[0];
+    const productVal = document.getElementById('req-field-product')?.value || 'FWM';
+    const modelVal = document.getElementById('req-field-model')?.value || 'U340';
+    const processVal = document.getElementById('req-field-process')?.value || 'Laser marking';
+    const shiftVal = document.getElementById('req-field-shift')?.value || 'I';
+    const repeatedVal = document.getElementById('req-field-repeated-new')?.value || 'Repeated';
+    const respVal = document.getElementById('req-field-resp')?.value || 'MAINT';
+    const priorityVal = document.getElementById('req-field-priority')?.value || 'High';
+    const obsVal = document.getElementById('req-field-observation')?.value || '';
+
     const newReq = window.flowStore.createRequest({
-      id: document.getElementById('req-field-id').value,
-      date: document.getElementById('req-field-date').value,
-      shift: document.getElementById('req-field-shift').value,
-      priority: document.getElementById('req-field-priority').value,
-      quantity: document.getElementById('req-field-quantity').value,
-      unit: document.getElementById('req-field-unit').value,
-      stage: document.getElementById('req-field-stage').value,
-      line: document.getElementById('req-field-line').value,
-      executorId: document.getElementById('req-field-executor').value,
-      attachments: [...this.createFormFiles],
-      comments: document.getElementById('req-field-comments').value
+      id: document.getElementById('req-field-id')?.value,
+      sNo: snoVal,
+      issueNo: issueNoVal,
+      date: dateVal,
+      escalationDate: dateVal,
+      product: productVal,
+      model: modelVal,
+      processOperation: processVal,
+      shift: shiftVal,
+      repeatedOrNew: repeatedVal,
+      resp: respVal,
+      priority: priorityVal,
+      observation: obsVal,
+      evidenceAttachment: {
+        id: `att-evid-${Date.now()}`,
+        name: 'Inspection_Gauge_Clamp_NG.svg',
+        path: 'images/evidence_clamp_ng.svg',
+        size: '240 KB',
+        type: 'image',
+        caption: `Evidence - Issue ${issueNoVal} (${productVal} ${modelVal} - ${processVal})`
+      },
+      stage: processVal,
+      line: `${processVal} Station`,
+      executorId: document.getElementById('req-field-executor')?.value || 'USR-002',
+      attachments: [
+        {
+          id: 'att-evidence-clamp',
+          name: 'Inspection_Gauge_Clamp_NG.svg',
+          size: '240 KB',
+          type: 'image',
+          uploadedAt: 'Today'
+        },
+        ...this.createFormFiles
+      ],
+      comments: obsVal
     });
 
-    this.showNotificationToast(`Request ${newReq.id} submitted! Status: Pending Execution. Executor notified.`, 'success');
+    this.showNotificationToast(`Process Audit Observation Issue ${newReq.issueNo} (${newReq.product}) logged successfully! Escalated to Resp: ${newReq.resp}.`, 'success');
 
     // Reset attachments
     this.createFormFiles = [
-      { id: 'mock-att-default', name: 'Technical_Spec_Sheet_RevB.pdf', size: '1.4 MB', type: 'pdf', uploadedAt: 'Today' }
+      { id: 'mock-att-default', name: 'Assembly_Spec_Sheet_Rev4.pdf', size: '1.8 MB', type: 'pdf', uploadedAt: 'Today' }
     ];
 
     // Open Request Details
@@ -651,7 +879,7 @@ class FlowApp {
   }
 
   // ========================================================================
-  // VIEW 3: REQUEST DETAILS PAGE
+  // VIEW 3: REQUEST DETAILS PAGE (Process Audit Observation Dossier)
   // ========================================================================
   renderRequestDetailsPage() {
     const req = window.flowStore.getRequestById(this.activeRequestId) || window.flowStore.getRequests()[0];
@@ -660,21 +888,78 @@ class FlowApp {
     this.activeRequestId = req.id;
 
     // Header info
-    document.getElementById('det-request-id').textContent = `Request ${req.id}`;
+    const issueNum = req.issueNo || '01';
+    const sNum = req.sNo || 1;
+    document.getElementById('det-request-id').textContent = `Observation: Issue ${issueNum} (${req.product || 'FWM'} - ${req.model || 'U340'})`;
     const badgeEl = document.getElementById('det-status-badge');
-    badgeEl.outerHTML = `<span id="det-status-badge">${this.renderStatusBadge(req.status)}</span>`;
+    if (badgeEl) badgeEl.outerHTML = `<span id="det-status-badge">${this.renderStatusBadge(req.status)}</span>`;
 
-    // Production specs
-    document.getElementById('det-created-date-meta').textContent = `Created: ${req.displayDate}`;
-    document.getElementById('det-date').textContent = req.displayDate;
-    document.getElementById('det-shift').textContent = req.shift;
-    document.getElementById('det-production').textContent = `${req.quantity} ${req.unit}`;
-    document.getElementById('det-stage').textContent = req.stage;
-    document.getElementById('det-line').textContent = req.line;
-    document.getElementById('det-priority').innerHTML = `<span class="badge badge-priority-${(req.priority || 'normal').toLowerCase()}">${req.priority || 'Normal'}</span>`;
-    document.getElementById('det-creator').textContent = `${req.creatorName} (Creator)`;
-    document.getElementById('det-executor').textContent = `${req.executorName} (Executor)`;
-    document.getElementById('det-comments').textContent = req.comments || 'None';
+    // Process Audit Observation 11 Fields
+    const detSnoIssue = document.getElementById('det-sno-issue');
+    if (detSnoIssue) detSnoIssue.textContent = `S.No: ${sNum} • Issue: ${issueNum}`;
+
+    const detDate = document.getElementById('det-date');
+    if (detDate) detDate.textContent = req.escalationDate || req.displayDate || req.date;
+
+    const detCreatedDateMeta = document.getElementById('det-created-date-meta');
+    if (detCreatedDateMeta) detCreatedDateMeta.textContent = `Escalation Date: ${req.escalationDate || req.displayDate}`;
+
+    const detProduct = document.getElementById('det-product');
+    if (detProduct) detProduct.textContent = req.product || 'FWM';
+
+    const detModel = document.getElementById('det-model');
+    if (detModel) detModel.textContent = req.model || 'U340';
+
+    const detProcess = document.getElementById('det-process');
+    if (detProcess) detProcess.textContent = req.processOperation || req.stage || 'Laser marking';
+
+    const detShift = document.getElementById('det-shift');
+    if (detShift) detShift.textContent = req.shift || 'I';
+
+    const isRepeated = (req.repeatedOrNew || 'Repeated') === 'Repeated';
+    const repeatedHtml = isRepeated
+      ? `<span class="badge-repeated">Repeated</span>`
+      : `<span class="badge-new-issue">New</span>`;
+
+    const detRepeated = document.getElementById('det-repeated-new');
+    if (detRepeated) detRepeated.innerHTML = repeatedHtml;
+
+    const detRepeatedTop = document.getElementById('det-repeated-badge-top');
+    if (detRepeatedTop) detRepeatedTop.innerHTML = repeatedHtml;
+
+    const respCode = req.resp || 'MAINT';
+    const detResp = document.getElementById('det-resp');
+    if (detResp) detResp.innerHTML = `<span class="badge-resp badge-resp-${respCode.toLowerCase()}">${respCode}</span>`;
+
+    const detPriority = document.getElementById('det-priority');
+    if (detPriority) detPriority.innerHTML = `<span class="badge badge-priority-${(req.priority || 'high').toLowerCase()}">${req.priority || 'High'}</span>`;
+
+    const detCreator = document.getElementById('det-creator');
+    if (detCreator) detCreator.textContent = `${req.creatorName} (Auditor)`;
+
+    const detExecutor = document.getElementById('det-executor');
+    if (detExecutor) detExecutor.textContent = `${req.executorName} (${respCode} Lead)`;
+
+    const detTrackingId = document.getElementById('det-tracking-id');
+    if (detTrackingId) detTrackingId.textContent = req.id;
+
+    // Issue / Observation bullet formatting
+    const detComments = document.getElementById('det-comments');
+    if (detComments) {
+      const rawObs = (req.observation || req.comments || '').trim();
+      if (rawObs) {
+        const lines = rawObs.split('\n').filter(l => l.trim().length > 0);
+        detComments.innerHTML = lines.map(line => {
+          line = line.trim();
+          if (line.startsWith('•') || line.startsWith('-')) {
+            return `<div><span style="color: #dc2626; font-weight: bold; margin-right: 4px;">•</span>${this.escapeHtml(line.replace(/^[•\-]\s*/, ''))}</div>`;
+          }
+          return `<div>${this.escapeHtml(line)}</div>`;
+        }).join('');
+      } else {
+        detComments.textContent = 'None';
+      }
+    }
 
     // Contextual button in header
     const ctxBtn = document.getElementById('det-context-action-btn');
@@ -1303,12 +1588,17 @@ class FlowApp {
     const filtered = requests.filter(r => {
       const matchesSearch = !searchVal ||
         r.id.toLowerCase().includes(searchVal) ||
-        r.line.toLowerCase().includes(searchVal) ||
+        (r.issueNo && r.issueNo.toLowerCase().includes(searchVal)) ||
+        (r.product && r.product.toLowerCase().includes(searchVal)) ||
+        (r.model && r.model.toLowerCase().includes(searchVal)) ||
+        (r.processOperation && r.processOperation.toLowerCase().includes(searchVal)) ||
+        (r.resp && r.resp.toLowerCase().includes(searchVal)) ||
+        (r.observation && r.observation.toLowerCase().includes(searchVal)) ||
         (r.comments && r.comments.toLowerCase().includes(searchVal)) ||
         r.creatorName.toLowerCase().includes(searchVal);
 
       const matchesShift = !shiftVal || r.shift === shiftVal;
-      const matchesStage = !stageVal || r.stage === stageVal;
+      const matchesStage = !stageVal || r.stage === stageVal || r.processOperation === stageVal;
       const matchesExec = !execVal || r.executorName.includes(execVal);
       const matchesStatus = !statusVal || r.status === statusVal;
 
@@ -1319,19 +1609,19 @@ class FlowApp {
     if (!tbody) return;
 
     if (filtered.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; padding: 24px; color: var(--text-muted);">No production requests match the selected filters.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; padding: 24px; color: var(--text-muted);">No production audit observations match the selected filters.</td></tr>`;
       return;
     }
 
     tbody.innerHTML = filtered.map(r => `
       <tr>
-        <td><span class="table-id-link" onclick="window.flowApp.openDetails('${r.id}')">${r.id}</span></td>
-        <td>${r.displayDate}</td>
-        <td>${r.shift}</td>
-        <td>${r.quantity} ${r.unit}</td>
-        <td><span class="font-medium">${r.stage}</span></td>
-        <td class="text-sm text-muted">${r.line}</td>
-        <td>${r.creatorName}</td>
+        <td><span class="table-id-link font-bold" onclick="window.flowApp.openDetails('${r.id}')">${r.issueNo ? `ISS-${r.issueNo}` : r.id}</span></td>
+        <td>${r.escalationDate || r.displayDate}</td>
+        <td><span class="font-bold">${r.shift}</span></td>
+        <td><strong style="color: var(--primary);">${r.product || 'FWM'}</strong> <span class="text-xs text-muted">(${r.model || 'U340'})</span></td>
+        <td><span class="font-medium">${r.processOperation || r.stage}</span></td>
+        <td><span class="badge-resp badge-resp-${(r.resp || 'maint').toLowerCase()}">${r.resp || 'MAINT'}</span></td>
+        <td>${(r.repeatedOrNew || 'Repeated') === 'Repeated' ? '<span class="badge-repeated">Repeated</span>' : '<span class="badge-new-issue">New</span>'}</td>
         <td>${r.executorName}</td>
         <td>${this.renderStatusBadge(r.status)}</td>
         <td>
@@ -1354,17 +1644,18 @@ class FlowApp {
 
   exportToCSV() {
     const requests = window.flowStore.getRequests();
-    const headers = ['Request ID', 'Date', 'Shift', 'Stage', 'Quantity', 'Unit', 'Line', 'Creator', 'Executor', 'Status'];
-    const rows = requests.map(r => [
-      r.id,
-      r.displayDate,
-      r.shift,
-      r.stage,
-      r.quantity,
-      r.unit,
-      `"${r.line}"`,
-      r.creatorName,
-      r.executorName,
+    const headers = ['S. no', 'Issue No', 'Escalation Date', 'Product', 'Model', 'Process / Operation', 'shift', 'Priority', 'Issue/Observation', 'Resp', 'Status'];
+    const rows = requests.map((r, idx) => [
+      r.sNo || (idx + 1),
+      r.issueNo || '01',
+      r.escalationDate || r.displayDate,
+      `"${r.product || 'FWM'}"`,
+      `"${r.model || 'U340'}"`,
+      `"${r.processOperation || r.stage || 'Laser marking'}"`,
+      r.shift || 'I',
+      r.repeatedOrNew || 'Repeated',
+      `"${(r.observation || r.comments || '').replace(/"/g, '""')}"`,
+      r.resp || 'MAINT',
       r.status
     ]);
 
@@ -1372,12 +1663,12 @@ class FlowApp {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `flowtrack_requests_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute('download', `Process_Audit_Observations_${new Date().toISOString().split('T')[0]}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 
-    this.showNotificationToast('CSV export generated successfully.', 'info');
+    this.showNotificationToast('Process Audit Observations exported to CSV successfully.', 'info');
   }
 
   // ========================================================================
@@ -1486,7 +1777,7 @@ class FlowApp {
             <button class="btn btn-secondary btn-sm" onclick="window.flowApp.loginAs('${u.role}')" title="Switch session to this user">
               Switch
             </button>
-            ${u.id !== user.id && !['USR-001','USR-002','USR-006','USR-007'].includes(u.id) ? `
+            ${u.id !== user.id && !['USR-001', 'USR-002', 'USR-006', 'USR-007'].includes(u.id) ? `
               <button class="btn btn-outline-danger btn-sm" onclick="window.flowApp.deleteUser('${u.id}', '${u.name}')" title="Delete User">
                 ✕
               </button>
