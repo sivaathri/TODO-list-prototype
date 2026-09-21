@@ -563,39 +563,25 @@
             </div>
           </div>
 
-          <!-- Process Audit Observation Log Table -->
+          <!-- Recent Requests Table -->
           <div class="card">
             <div class="card-header">
-              <div>
-                <span class="card-title" id="table-creator-title">Process Audit Observation Register</span>
-                <span class="text-xs text-muted" style="display: block; margin-top: 2px;">Standard floor observation log
-                  &bull; 1. Production Details tracking matrix</span>
-              </div>
-              <div style="display: flex; gap: 8px;">
-                <button class="btn btn-secondary btn-sm"
-                  onclick="window.flowApp.loadExcelSampleObservation(); window.flowApp.navigateTo('create-request');">
-                  + Log Observation
-                </button>
-                <button class="btn btn-secondary btn-sm" onclick="window.flowApp.navigateTo('request-tracking')">View
-                  All Tracking</button>
-              </div>
+              <span class="card-title">Recent Production Requests</span>
+              <button class="btn btn-secondary btn-sm" onclick="window.flowApp.navigateTo('request-tracking')">View All
+                Tracking</button>
             </div>
-            <div class="table-container" style="overflow-x: auto;">
-              <table class="data-table" id="table-audit-observations">
+            <div class="table-container">
+              <table class="data-table">
                 <thead>
-                  <tr style="background: #f1f5f9;">
-                    <th style="white-space: nowrap; width: 60px;">S. no</th>
-                    <th style="white-space: nowrap; width: 80px;">Issue No</th>
-                    <th style="white-space: nowrap; width: 110px;">Escalation Date</th>
-                    <th style="white-space: nowrap; width: 90px;">Product</th>
-                    <th style="white-space: nowrap; width: 80px;">Model</th>
-                    <th style="white-space: nowrap;">Process / Operation</th>
-                    <th style="white-space: nowrap; width: 100px;">Evidence/ Escalation Attachments</th>
-                    <th style="white-space: nowrap; width: 60px;">shift</th>
-                    <th style="white-space: nowrap; width: 110px;">Priority</th>
-                    <th style="min-width: 260px;">Issue/Observation</th>
-                    <th style="white-space: nowrap; width: 80px;">Resp</th>
-                    <th style="white-space: nowrap; width: 90px;">Action</th>
+                  <tr>
+                    <th>Request ID</th>
+                    <th>Date</th>
+                    <th>Shift</th>
+                    <th>Production</th>
+                    <th>Stage</th>
+                    <th>Status</th>
+                    <th>Created Date</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody id="table-creator-requests">

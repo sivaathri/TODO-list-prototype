@@ -540,60 +540,23 @@ class FlowApp {
 
     const requests = window.flowStore.getRequests();
 
-    tbody.innerHTML = requests.map((r, idx) => {
-      const sNo = r.sNo || (idx + 1);
-      const issueNo = r.issueNo || String(sNo).padStart(2, '0');
-      const dateStr = r.escalationDate || r.displayDate || r.date;
-      const product = r.product || 'FWM';
-      const model = r.model || 'U340';
-      const process = r.processOperation || r.stage || 'Laser marking';
-      const shift = r.shift || 'I';
-      const repeated = r.repeatedOrNew || 'Repeated';
-      const repeatedBadge = repeated === 'Repeated'
-        ? `<span class="badge-repeated">Repeated</span>`
-        : `<span class="badge-new-issue">New</span>`;
-      const resp = r.resp || 'MAINT';
-      const respBadge = `<span class="badge-resp badge-resp-${resp.toLowerCase()}">${resp}</span>`;
-
-      const rawObs = (r.observation || r.comments || '').trim();
-      const obsLines = rawObs.split('\n').filter(l => l.trim().length > 0);
-      const formattedObs = obsLines.map(line => {
-        line = line.trim();
-        if (line.startsWith('•') || line.startsWith('-')) {
-          return `<div><span class="obs-bullet">•</span>${this.escapeHtml(line.replace(/^[•\-]\s*/, ''))}</div>`;
-        }
-        return `<div>${this.escapeHtml(line)}</div>`;
-      }).join('');
-
-      const evidenceImg = (r.evidenceAttachment && r.evidenceAttachment.path) ? r.evidenceAttachment.path : 'images/evidence_clamp_ng.svg';
-      const evidenceCaption = (r.evidenceAttachment && r.evidenceAttachment.caption) ? r.evidenceAttachment.caption : `Evidence - Issue ${issueNo} (${product} ${model})`;
+    tbody.innerHTML = requests.map(r => {
+      const createdDate = (r.activityTimeline && r.activityTimeline.length > 0)
+        ? r.activityTimeline[0].timestamp
+        : (r.displayDate || r.date || '03 Sep 2026');
+      const productionDisplay = r.quantity ? `${r.quantity} ${r.unit || 'Units'}` : '1,250 Units';
 
       return `
         <tr>
-          <td style="font-weight: 700; color: var(--navy-900); text-align: center;">${sNo}</td>
-          <td><span class="table-id-link font-bold" onclick="window.flowApp.openDetails('${r.id}')">${issueNo}</span></td>
-          <td style="white-space: nowrap;">${dateStr}</td>
-          <td><strong style="color: var(--primary); font-size: 13px;">${product}</strong></td>
-          <td><span class="font-medium">${model}</span></td>
-          <td><span style="font-size: 12.5px;">${process}</span></td>
-          <td class="table-evidence-cell">
-            <div class="table-evidence-thumb" onclick="window.flowApp.openEvidenceLightbox('${evidenceImg}', '${evidenceCaption}')" title="Click to inspect clamp defect photo">
-              <img src="${evidenceImg}" alt="Defect Evidence" />
-              <span class="table-evidence-badge">DEFECT</span>
-            </div>
-          </td>
-          <td style="font-weight: 700; text-align: center;">${shift}</td>
-          <td>${repeatedBadge}</td>
+          <td><span class="table-id-link" onclick="window.flowApp.openDetails('${r.id}')">${r.id}</span></td>
+          <td>${r.displayDate || r.date}</td>
+          <td><span class="font-medium">${r.shift}</span></td>
+          <td>${productionDisplay}</td>
+          <td><span class="font-medium">${r.stage || r.processOperation || 'Laser marking'}</span></td>
+          <td>${this.renderStatusBadge(r.status)}</td>
+          <td class="text-xs text-muted">${createdDate}</td>
           <td>
-            <div class="table-observation-text">
-              ${formattedObs || '<span class="text-muted">No observation recorded</span>'}
-            </div>
-          </td>
-          <td>${respBadge}</td>
-          <td>
-            <button class="btn btn-secondary btn-sm" onclick="window.flowApp.openDetails('${r.id}')" title="View Observation Dossier">
-              View
-            </button>
+            <button class="btn btn-secondary btn-sm" onclick="window.flowApp.openDetails('${r.id}')">View Details</button>
           </td>
         </tr>
       `;
@@ -916,10 +879,19 @@ class FlowApp {
     const detShift = document.getElementById('det-shift');
     if (detShift) detShift.textContent = req.shift || 'I';
 
-    const isRepeated = (req.repeatedOrNew || 'Repeated') === 'Repeated';
-    const repeatedHtml = isRepeated
-      ? `<span class="badge-repeated">Repeated</span>`
-      : `<span class="badge-new-issue">New</span>`;
+    const repeatedVal = req.repeatedOrNew || 'Repeated';
+    let repeatedHtml;
+    if (repeatedVal === 'Repeated') {
+      repeatedHtml = `<span class="badge-repeated">Repeated</span>`;
+    } else if (repeatedVal === 'New') {
+      repeatedHtml = `<span class="badge-new-issue">New</span>`;
+    } else if (repeatedVal === 'Critical') {
+      repeatedHtml = `<span class="badge badge-priority-critical">Critical</span>`;
+    } else if (repeatedVal === 'High') {
+      repeatedHtml = `<span class="badge badge-priority-high">High</span>`;
+    } else {
+      repeatedHtml = `<span class="badge badge-priority-normal">${repeatedVal}</span>`;
+    }
 
     const detRepeated = document.getElementById('det-repeated-new');
     if (detRepeated) detRepeated.innerHTML = repeatedHtml;
@@ -1597,7 +1569,10 @@ class FlowApp {
         (r.comments && r.comments.toLowerCase().includes(searchVal)) ||
         r.creatorName.toLowerCase().includes(searchVal);
 
-      const matchesShift = !shiftVal || r.shift === shiftVal;
+      const matchesShift = !shiftVal || r.shift === shiftVal ||
+        (shiftVal === 'Morning' && r.shift === 'I') ||
+        (shiftVal === 'Afternoon' && r.shift === 'II') ||
+        (shiftVal === 'Night' && r.shift === 'III');
       const matchesStage = !stageVal || r.stage === stageVal || r.processOperation === stageVal;
       const matchesExec = !execVal || r.executorName.includes(execVal);
       const matchesStatus = !statusVal || r.status === statusVal;
@@ -1615,14 +1590,14 @@ class FlowApp {
 
     tbody.innerHTML = filtered.map(r => `
       <tr>
-        <td><span class="table-id-link font-bold" onclick="window.flowApp.openDetails('${r.id}')">${r.issueNo ? `ISS-${r.issueNo}` : r.id}</span></td>
-        <td>${r.escalationDate || r.displayDate}</td>
-        <td><span class="font-bold">${r.shift}</span></td>
-        <td><strong style="color: var(--primary);">${r.product || 'FWM'}</strong> <span class="text-xs text-muted">(${r.model || 'U340'})</span></td>
-        <td><span class="font-medium">${r.processOperation || r.stage}</span></td>
-        <td><span class="badge-resp badge-resp-${(r.resp || 'maint').toLowerCase()}">${r.resp || 'MAINT'}</span></td>
-        <td>${(r.repeatedOrNew || 'Repeated') === 'Repeated' ? '<span class="badge-repeated">Repeated</span>' : '<span class="badge-new-issue">New</span>'}</td>
-        <td>${r.executorName}</td>
+        <td><span class="table-id-link font-bold" onclick="window.flowApp.openDetails('${r.id}')">${r.id}</span></td>
+        <td>${r.displayDate || r.date}</td>
+        <td><span class="font-medium">${r.shift}</span></td>
+        <td>${r.quantity ? `${r.quantity} ${r.unit || 'Units'}` : '1,250 Units'}</td>
+        <td><span class="font-medium">${r.stage || r.processOperation || 'Laser marking'}</span></td>
+        <td>${r.line || 'Station 1'}</td>
+        <td>${r.creatorName || 'Siva'}</td>
+        <td>${r.executorName || 'Mr. Kumar'}</td>
         <td>${this.renderStatusBadge(r.status)}</td>
         <td>
           <button class="btn btn-secondary btn-sm" onclick="window.flowApp.openDetails('${r.id}')">
