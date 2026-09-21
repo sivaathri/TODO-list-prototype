@@ -54,7 +54,12 @@ class AppStore {
 
   init() {
     // Load or seed requests
-    if (!localStorage.getItem(this.STORAGE_KEY_REQUESTS)) {
+    let storedReqs = null;
+    try {
+      storedReqs = JSON.parse(localStorage.getItem(this.STORAGE_KEY_REQUESTS));
+    } catch (e) {}
+
+    if (!storedReqs || !Array.isArray(storedReqs) || !storedReqs[0] || !storedReqs[0].product) {
       localStorage.setItem(this.STORAGE_KEY_REQUESTS, JSON.stringify(INITIAL_REQUESTS));
     }
     // Load or seed users
@@ -265,7 +270,15 @@ class AppStore {
     return `REQ-${maxNum + 1}`;
   }
 
-  // Action: Create Production Request
+  generateNextAuditSequence() {
+    const requests = this.getRequests();
+    const sNos = requests.map(r => parseInt(r.sNo, 10)).filter(n => !isNaN(n));
+    const nextSNo = sNos.length > 0 ? Math.max(...sNos) + 1 : requests.length + 1;
+    const nextIssueNo = String(nextSNo).padStart(2, '0');
+    return { nextSNo, nextIssueNo };
+  }
+
+  // Action: Create Production Request / Process Audit Observation
   createRequest(data) {
     const requests = this.getRequests();
     const newId = data.id || this.generateNextRequestId();
@@ -276,22 +289,36 @@ class AppStore {
 
     const executor = this.getUserById(data.executorId) || { name: 'Mr. Kumar', id: 'USR-002' };
 
+    const sNos = requests.map(r => parseInt(r.sNo, 10)).filter(n => !isNaN(n));
+    const nextSNo = data.sNo || (sNos.length > 0 ? Math.max(...sNos) + 1 : requests.length + 1);
+    const nextIssueNo = data.issueNo || String(nextSNo).padStart(2, '0');
+
     const newRequest = {
       id: newId,
-      date: data.date || now.toISOString().split('T')[0],
+      sNo: nextSNo,
+      issueNo: nextIssueNo,
+      date: data.date || data.escalationDate || now.toISOString().split('T')[0],
+      escalationDate: data.escalationDate || data.date || now.toISOString().split('T')[0],
       displayDate: formattedDate,
-      shift: data.shift || 'Morning',
+      product: data.product || 'FWM',
+      model: data.model || 'U340',
+      processOperation: data.processOperation || data.stage || 'Laser marking',
+      shift: data.shift || 'I',
+      repeatedOrNew: data.repeatedOrNew || 'Repeated',
+      resp: data.resp || 'MAINT',
+      observation: data.observation || data.comments || '',
+      evidenceAttachment: data.evidenceAttachment || (data.attachments && data.attachments.find(a => a.type === 'image')) || null,
       quantity: data.quantity || '1,000',
       unit: data.unit || 'Units',
-      line: data.line || 'Line A - Main Chassis',
-      stage: data.stage || 'Assembly',
+      line: data.line || `${data.processOperation || 'Laser marking'} Station`,
+      stage: data.processOperation || data.stage || 'Laser marking',
       creatorId: this.currentUser.id,
       creatorName: this.currentUser.shortName,
       executorId: executor.id,
       executorName: executor.shortName,
       status: 'Pending Execution',
       priority: data.priority || 'High',
-      comments: data.comments || '',
+      comments: data.observation || data.comments || '',
       attachments: data.attachments || [],
       executionDetails: null,
       approvals: {
@@ -315,22 +342,22 @@ class AppStore {
       activityTimeline: [
         {
           timestamp: timestampStr,
-          title: 'Request Created',
-          desc: `${this.currentUser.shortName} created production request for ${data.stage} (${data.quantity} ${data.unit || 'Units'})`,
+          title: 'Observation Logged',
+          desc: `${this.currentUser.shortName} logged audit observation for ${data.product || 'FWM'} (${data.model || 'U340'} - ${data.processOperation || 'Laser marking'})`,
           actor: this.currentUser.name,
           type: 'create'
         },
         {
           timestamp: timestampStr,
-          title: `Assigned to ${executor.shortName}`,
-          desc: `Request assigned for execution on ${data.line}`,
+          title: `Escalated to Resp: ${data.resp || 'MAINT'} (${executor.shortName})`,
+          desc: `Action assigned to ${executor.shortName} for containment and rectification`,
           actor: this.currentUser.name,
           type: 'assign'
         },
         {
           timestamp: timestampStr,
-          title: 'Email Notification Sent',
-          desc: `Automated dispatch sent to ${executor.name} (${executor.email})`,
+          title: 'Notification Dispatched',
+          desc: `Alert dispatched to ${data.resp || 'MAINT'} Lead (${executor.name})`,
           actor: 'System',
           type: 'notify'
         }
