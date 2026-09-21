@@ -61,6 +61,18 @@ class AppStore {
 
     if (!storedReqs || !Array.isArray(storedReqs) || !storedReqs[0] || !storedReqs[0].product || !storedReqs.some(r => r.module === 'ihlr' || r.problem)) {
       localStorage.setItem(this.STORAGE_KEY_REQUESTS, JSON.stringify(INITIAL_REQUESTS));
+    } else {
+      let reqUpdated = false;
+      storedReqs = storedReqs.map(r => {
+        if (r.id === 'REQ-1002' && (!r.receivedFrom || r.receivedFrom === '')) {
+          r.receivedFrom = 'D3';
+          reqUpdated = true;
+        }
+        return r;
+      });
+      if (reqUpdated) {
+        localStorage.setItem(this.STORAGE_KEY_REQUESTS, JSON.stringify(storedReqs));
+      }
     }
     // Load or seed users
     let storedUsers = null;

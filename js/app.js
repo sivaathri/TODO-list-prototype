@@ -642,7 +642,7 @@ class FlowApp {
     if (document.getElementById('ihlr-field-problem')) document.getElementById('ihlr-field-problem').value = 'Low voltage';
     if (document.getElementById('ihlr-field-model')) document.getElementById('ihlr-field-model').value = 'OLS LONG ARM';
     if (document.getElementById('ihlr-field-detected-at')) document.getElementById('ihlr-field-detected-at').value = 'Final Testing';
-    if (document.getElementById('ihlr-field-received-from')) document.getElementById('ihlr-field-received-from').value = '';
+    if (document.getElementById('ihlr-field-received-from')) document.getElementById('ihlr-field-received-from').value = 'D3';
     if (document.getElementById('ihlr-field-analysis-by')) document.getElementById('ihlr-field-analysis-by').value = 'GURU';
     if (document.getElementById('ihlr-field-4m')) {
       document.getElementById('ihlr-field-4m').value = 'MAN';
