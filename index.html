@@ -768,19 +768,15 @@
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label">Priority <span class="required">*</span></label>
-                  <input type="hidden" id="req-field-repeated-new" value="Repeated">
-                  <div class="repeated-toggle-group">
-                    <button type="button" class="repeated-toggle-btn active type-repeated" id="btn-toggle-repeated"
-                      onclick="window.flowApp.setRepeatedType('Repeated')">
-                      Repeated
-                    </button>
-                    <button type="button" class="repeated-toggle-btn type-new" id="btn-toggle-new"
-                      onclick="window.flowApp.setRepeatedType('New')">
-                      New
-                    </button>
-                  </div>
-                  <span class="form-help">Issue re-occurrence status</span>
+                  <label class="form-label" for="req-field-repeated-new">Priority <span class="required">*</span></label>
+                  <select id="req-field-repeated-new" class="form-select" required>
+                    <option value="Repeated" selected>Repeated</option>
+                    <option value="New">New</option>
+                    <option value="Normal">Normal</option>
+                    <option value="High">High</option>
+                    <option value="Critical">Critical</option>
+                  </select>
+                  <span class="form-help">Issue classification &amp; priority level</span>
                 </div>
               </div>
 

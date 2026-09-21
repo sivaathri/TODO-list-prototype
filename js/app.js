@@ -626,8 +626,8 @@ class FlowApp {
   }
 
   setRepeatedType(type) {
-    const hiddenField = document.getElementById('req-field-repeated-new');
-    if (hiddenField) hiddenField.value = type;
+    const field = document.getElementById('req-field-repeated-new');
+    if (field) field.value = type;
 
     const btnRepeated = document.getElementById('btn-toggle-repeated');
     const btnNew = document.getElementById('btn-toggle-new');
